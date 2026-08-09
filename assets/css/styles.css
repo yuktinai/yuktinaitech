@@ -467,3 +467,37 @@ h3 {
     grid-template-columns: 1fr;
   }
 }
+
+.legal-main {
+  padding-top: 24px;
+  padding-bottom: 48px;
+}
+
+.legal-hero {
+  padding-bottom: 14px;
+}
+
+.legal-card {
+  max-width: 860px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(14px);
+  border-radius: var(--radius);
+  padding: 28px;
+}
+
+.legal-card h2 {
+  margin: 0 0 10px;
+  font-size: 1.1rem;
+}
+
+.legal-card p {
+  margin: 0 0 20px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.legal-card a {
+  color: var(--brand);
+}

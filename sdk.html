@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AMOS SDK | Yuktinai Technologies</title>
+    <meta
+      name="description"
+      content="AMOS Android SDK for app developers. Install from Maven Central, initialize quickly, and add monetization-aware behavior with a clean Android integration."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" type="image/svg+xml" href="assets/images/logo-mark.svg" />
+    <link rel="stylesheet" href="assets/css/styles.css" />
+  </head>
+  <body>
+    <div class="page-noise"></div>
+    <div class="site-shell">
+      <header class="site-header">
+        <a class="brand" href="index.html" aria-label="Yuktinai Technologies home">
+          <img src="assets/images/logo-mark.svg" alt="" width="46" height="46" />
+          <span>
+            <strong>Yuktinai</strong>
+            <small>Technologies</small>
+          </span>
+        </a>
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+          Menu
+        </button>
+        <nav id="site-nav" class="site-nav">
+          <a href="index.html">Home</a>
+          <a class="active" href="sdk.html">SDK</a>
+          <a href="services.html">Services</a>
+          <a href="about.html">About</a>
+          <a href="contact.html">Contact</a>
+        </nav>
+      </header>
+
+      <main class="page-main">
+        <section class="page-hero sdk-hero">
+          <div>
+            <p class="eyebrow">Android SDK</p>
+            <h1>AMOS SDK for modern monetization-aware Android apps.</h1>
+            <p>
+              A referral-ready introduction page for app developers integrating AMOS into Android products. Install from Maven Central, initialize quickly, and add monetization-aware behavior through a clean SDK surface.
+            </p>
+            <div class="hero-actions">
+              <a class="button button-primary" href="#quickstart">Start integration</a>
+              <a class="button button-secondary" href="contact.html">Request onboarding help</a>
+            </div>
+            <div class="sdk-inline-links">
+              <span class="sdk-badge">Version 1.0.1</span>
+              <span class="sdk-badge">Maven Central</span>
+              <span class="sdk-badge">Min SDK 24</span>
+            </div>
+          </div>
+
+          <aside class="sdk-summary">
+            <p class="service-index">Why teams use it</p>
+            <h2>Clean monetization tooling without extra app complexity.</h2>
+            <ul>
+              <li>Initialize quickly with a small Android integration surface.</li>
+              <li>Track monetization events safely through SDK helpers.</li>
+              <li>Read user segment state for ad, subscription, and hybrid experiences.</li>
+              <li>Keep monetization behavior centralized through the SDK instead of custom app-side plumbing.</li>
+            </ul>
+          </aside>
+        </section>
+
+        <section class="sdk-metrics">
+          <article class="sdk-metric-card">
+            <strong>Coordinate</strong>
+            <span>`com.yuktinai:amos-sdk:1.0.1`</span>
+          </article>
+          <article class="sdk-metric-card">
+            <strong>Integration</strong>
+            <span>Android SDK</span>
+          </article>
+          <article class="sdk-metric-card">
+            <strong>Target</strong>
+            <span>Java 11 bytecode</span>
+          </article>
+        </section>
+
+        <section id="quickstart" class="sdk-grid">
+          <article class="sdk-code">
+            <p class="service-index">Step 1</p>
+            <h2>Add the dependency</h2>
+            <p>Use `mavenCentral()` in your Android project repositories and install the current stable release.</p>
+            <pre><code>dependencyResolutionManagement {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+dependencies {
+    implementation("com.yuktinai:amos-sdk:1.0.1")
+}</code></pre>
+          </article>
+
+          <article class="sdk-code">
+            <p class="service-index">Step 2</p>
+            <h2>Initialize the SDK</h2>
+            <p>Provide your app API key, app identifier, and user identifier at session start.</p>
+            <pre><code>Monetization.init(context, "API_KEY", "APP_ID", "USER_ID") {
+    val state = Monetization.getState()
+    val segment = state.userSegment
+    val allowedEvents = state.allowedEvents
+}</code></pre>
+          </article>
+
+          <article class="sdk-code">
+            <p class="service-index">Step 3</p>
+            <h2>Track safely</h2>
+            <p>Use the SDK helpers for cleaner event tracking in the host app.</p>
+            <pre><code>val tracked = Monetization.trackEventIfAllowed("ad_watched")
+
+if (Monetization.isEventAllowed("paywall_click")) {
+    Monetization.trackEvent("paywall_click")
+}</code></pre>
+          </article>
+
+          <article class="sdk-checklist">
+            <p class="service-index">Integration flow</p>
+            <h2>What the app team does</h2>
+            <ol>
+              <li>Your app initializes the SDK with `API_KEY`, `APP_ID`, and `USER_ID`.</li>
+              <li>Your app reads SDK state after initialization when needed.</li>
+              <li>Your app tracks events through the SDK helpers during the session.</li>
+              <li>Your app ends the session with `Monetization.endSession()` when appropriate.</li>
+              <li>The SDK handles the underlying service communication internally.</li>
+            </ol>
+          </article>
+        </section>
+
+        <section class="sdk-links">
+          <article class="sdk-link-card">
+            <p class="service-index">Useful links</p>
+            <h2>Developer handoff</h2>
+            <ul>
+              <li><a href="https://central.sonatype.com/artifact/com.yuktinai/amos-sdk/1.0.1">View the Maven Central listing</a></li>
+              <li><a href="mailto:yuktinai2026@gmail.com?subject=AMOS%20SDK%20integration%20support">Request implementation support</a></li>
+              <li><a href="contact.html">Contact Yuktinai for onboarding support</a></li>
+            </ul>
+          </article>
+
+          <article class="sdk-link-card">
+            <p class="service-index">What to prepare</p>
+            <h2>Before the app team starts</h2>
+            <ul>
+              <li>A valid AMOS `API_KEY` and `APP_ID`.</li>
+              <li>An agreed user identifier strategy for the host app.</li>
+              <li>Android Internet permission in the app manifest.</li>
+              <li>A clear place in the app where segment state will be consumed.</li>
+            </ul>
+          </article>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <p>&copy; <span id="year"></span> Yuktinai Technologies</p>
+        <div>
+          <a href="index.html">Home</a>
+          <a href="sdk.html">SDK</a>
+          <a href="services.html">Services</a>
+          <a href="contact.html">Contact</a>
+        </div>
+      </footer>
+    </div>
+
+    <script src="assets/js/main.js"></script>
+  </body>
+</html>

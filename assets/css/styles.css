@@ -214,6 +214,10 @@ h3 {
   line-height: 1.65;
 }
 
+.section-copy {
+  max-width: 44rem;
+}
+
 .hero-text {
   max-width: 29rem;
   margin: 16px 0 0;
@@ -342,6 +346,131 @@ h3 {
   min-height: 180px;
 }
 
+.service-card-highlight {
+  background:
+    radial-gradient(circle at top right, rgba(116, 208, 255, 0.2), transparent 38%),
+    var(--panel);
+}
+
+.text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  color: var(--brand);
+  font-weight: 700;
+}
+
+.sdk-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(260px, 0.8fr);
+  gap: 16px;
+  align-items: stretch;
+}
+
+.sdk-summary,
+.sdk-code,
+.sdk-checklist,
+.sdk-metric-card,
+.sdk-link-card {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(14px);
+  border-radius: var(--radius);
+}
+
+.sdk-summary,
+.sdk-code,
+.sdk-checklist,
+.sdk-link-card {
+  padding: 22px;
+}
+
+.sdk-metrics,
+.sdk-grid,
+.sdk-links {
+  display: grid;
+  gap: 14px;
+}
+
+.sdk-metrics {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.sdk-metric-card {
+  padding: 18px 20px;
+}
+
+.sdk-metric-card strong {
+  display: block;
+  margin-bottom: 6px;
+  font-family: "Sora", sans-serif;
+  font-size: 1.1rem;
+}
+
+.sdk-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.sdk-summary ul,
+.sdk-checklist ol,
+.sdk-link-card ul {
+  margin: 0;
+  padding-left: 20px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.sdk-summary li + li,
+.sdk-checklist li + li,
+.sdk-link-card li + li {
+  margin-top: 8px;
+}
+
+.sdk-code pre {
+  margin: 12px 0 0;
+  padding: 18px;
+  border-radius: 20px;
+  overflow-x: auto;
+  background: rgba(3, 8, 14, 0.82);
+  color: #dff4ff;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+.sdk-code p,
+.sdk-summary p,
+.sdk-link-card p {
+  color: var(--muted);
+}
+
+.sdk-inline-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.sdk-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text);
+  font-weight: 700;
+  font-size: 0.84rem;
+}
+
+.sdk-link-card a {
+  color: var(--brand);
+}
+
 .split-feature,
 .contact-simple,
 .contact-layout-simple {
@@ -444,7 +573,10 @@ h3 {
   .service-stack-grid,
   .split-feature,
   .contact-simple,
-  .contact-layout-simple {
+  .contact-layout-simple,
+  .sdk-grid,
+  .sdk-hero,
+  .sdk-metrics {
     grid-template-columns: 1fr;
   }
 

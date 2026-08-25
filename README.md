@@ -5,6 +5,7 @@ Simple static marketing website for Yuktinai Technologies.
 ## Pages
 
 - `index.html`
+- `sdk.html`
 - `services.html`
 - `about.html`
 - `contact.html`

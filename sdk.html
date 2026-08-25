@@ -6,7 +6,7 @@
     <title>AMOS SDK | Yuktinai Technologies</title>
     <meta
       name="description"
-      content="AMOS Android SDK for app developers. Install from Maven Central, initialize quickly, and add monetization-aware behavior with a clean Android integration."
+      content="AMOS Android SDK for app developers. Choose wrapper-serving or manual-serving integration, install from Maven Central, and connect your app to the AMOS monetization decision flow."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -46,7 +46,7 @@
             <p class="eyebrow">Android SDK</p>
             <h1>AMOS SDK for modern monetization-aware Android apps.</h1>
             <p>
-              A referral-ready introduction page for app developers integrating AMOS into Android products. Install from Maven Central, initialize quickly, and add monetization-aware behavior through a clean SDK surface.
+              Integrate AMOS into Android apps with either a wrapper-serving AdMob module or a manual-serving core module. The SDK connects runtime tracking, user segmentation, and monetization decisions without exposing backend complexity to the host app.
             </p>
             <div class="hero-actions">
               <a class="button button-primary" href="#quickstart">Start integration</a>
@@ -63,22 +63,22 @@
             <p class="service-index">Why teams use it</p>
             <h2>Clean monetization tooling without extra app complexity.</h2>
             <ul>
-              <li>Initialize quickly with a small Android integration surface.</li>
-              <li>Track monetization events safely through SDK helpers.</li>
-              <li>Read user segment state for ad, subscription, and hybrid experiences.</li>
-              <li>Keep monetization behavior centralized through the SDK instead of custom app-side plumbing.</li>
+              <li>Choose between a fast AdMob wrapper integration or a more controlled manual-serving path.</li>
+              <li>Track events and metrics safely through SDK helpers.</li>
+              <li>Read monetization segment state for ad, subscription, and hybrid experiences.</li>
+              <li>Keep decisions centralized in the backend and admin UI while the SDK handles runtime coordination.</li>
             </ul>
           </aside>
         </section>
 
         <section class="sdk-metrics">
           <article class="sdk-metric-card">
-            <strong>Coordinate</strong>
-            <span>`com.yuktinai:amos-sdk:1.0.1`</span>
+            <strong>Wrapper Artifact</strong>
+            <span>`com.yuktinai:amos-sdk-admob:1.0.1`</span>
           </article>
           <article class="sdk-metric-card">
-            <strong>Integration</strong>
-            <span>Android SDK</span>
+            <strong>Base Artifact</strong>
+            <span>`com.yuktinai:amos-sdk:1.0.1`</span>
           </article>
           <article class="sdk-metric-card">
             <strong>Target</strong>
@@ -89,8 +89,8 @@
         <section id="quickstart" class="sdk-grid">
           <article class="sdk-code">
             <p class="service-index">Step 1</p>
-            <h2>Add the dependency</h2>
-            <p>Use `mavenCentral()` in your Android project repositories and install the current stable release.</p>
+            <h2>Choose the artifact</h2>
+            <p>Use `mavenCentral()` in your Android project repositories, then choose the integration style that fits the publisher contract.</p>
             <pre><code>dependencyResolutionManagement {
     repositories {
         google()
@@ -99,7 +99,11 @@
 }
 
 dependencies {
-    implementation("com.yuktinai:amos-sdk:1.0.1")
+    // Wrapper-serving AdMob integration
+    implementation("com.yuktinai:amos-sdk-admob:1.0.1")
+
+    // Or manual / hybrid serving
+    // implementation("com.yuktinai:amos-sdk:1.0.1")
 }</code></pre>
           </article>
 
@@ -111,29 +115,107 @@ dependencies {
     val state = Monetization.getState()
     val segment = state.userSegment
     val allowedEvents = state.allowedEvents
+    val allowedMetrics = state.allowedMetrics
 }</code></pre>
           </article>
 
           <article class="sdk-code">
             <p class="service-index">Step 3</p>
-            <h2>Track safely</h2>
-            <p>Use the SDK helpers for cleaner event tracking in the host app.</p>
-            <pre><code>val tracked = Monetization.trackEventIfAllowed("ad_watched")
+            <h2>Wrapper-serving setup</h2>
+            <p>If you use the wrapper artifact, add the AdMob app ID placeholder and register local ad groups.</p>
+            <pre><code>android {
+    defaultConfig {
+        manifestPlaceholders["amosAdMobAppId"] = "ca-app-pub-xxxxxxxxxxxxxxxx~yyyyyyyyyy"
+    }
+}
 
-if (Monetization.isEventAllowed("paywall_click")) {
-    Monetization.trackEvent("paywall_click")
-}</code></pre>
+AmosAdMob.configure(
+    AdMobConfig(
+        interstitialGroups = mapOf(
+            AdMobConfig.DEFAULT_GROUP_REF to AdMobGroupConfig(
+                unitIds = listOf("ca-app-pub-xxx/111"),
+                preloadOnInit = true
+            )
+        )
+    )
+)</code></pre>
           </article>
 
           <article class="sdk-checklist">
             <p class="service-index">Integration flow</p>
             <h2>What the app team does</h2>
             <ol>
-              <li>Your app initializes the SDK with `API_KEY`, `APP_ID`, and `USER_ID`.</li>
-              <li>Your app reads SDK state after initialization when needed.</li>
-              <li>Your app tracks events through the SDK helpers during the session.</li>
-              <li>Your app ends the session with `Monetization.endSession()` when appropriate.</li>
-              <li>The SDK handles the underlying service communication internally.</li>
+              <li>Initialize `Monetization` with `API_KEY`, `APP_ID`, and `USER_ID`.</li>
+              <li>Read SDK state after init and consume the resolved user segment when needed.</li>
+              <li>Track allowed events and metrics through the SDK during the session.</li>
+              <li>If using the wrapper artifact, initialize `AmosAdMob` and call wrapper methods for interstitial, rewarded, and banner flows.</li>
+              <li>If using the core artifact, integrate Google Mobile Ads directly and use the AMOS planning APIs for request, preload, and lifecycle callbacks.</li>
+              <li>End the AMOS session when appropriate with `Monetization.endSession()`.</li>
+            </ol>
+          </article>
+        </section>
+
+        <section class="sdk-grid">
+          <article class="sdk-code">
+            <p class="service-index">Wrapper path</p>
+            <h2>Use the AdMob wrapper</h2>
+            <p>The wrapper module includes Google Mobile Ads and owns the provider bridge while keeping AMOS runtime decisions centralized.</p>
+            <pre><code>Monetization.init(context, "API_KEY", "APP_ID", "USER_ID") {
+    AmosAdMob.initialize(context)
+}
+
+AmosAdMob.showInterstitial(activity)
+
+AmosAdMob.showRewarded(
+    activity = activity,
+    onRewardEarned = { /* reward user */ }
+)</code></pre>
+          </article>
+
+          <article class="sdk-code">
+            <p class="service-index">Core path</p>
+            <h2>Use manual or hybrid serving</h2>
+            <p>The core artifact is for publishers who want tighter control over the provider SDK and ad orchestration.</p>
+            <pre><code>val request = Monetization.getAdMobInterstitialRequest("default")
+
+val preload = Monetization.preloadAdMobInterstitial("default")
+
+Monetization.markAdMobInterstitialLoaded(groupRef, loadedAd)
+Monetization.recordAdMobInterstitialShown(groupRef)</code></pre>
+          </article>
+
+          <article class="sdk-checklist">
+            <p class="service-index">Runtime model</p>
+            <h2>What AMOS handles behind the scenes</h2>
+            <ol>
+              <li>Session start and end.</li>
+              <li>Backend-driven segment and monetization decision resolution.</li>
+              <li>Allowed event and metric filtering.</li>
+              <li>AdMob request planning, preload planning, rotation, and fallback logic.</li>
+              <li>Coordination with backend Value Engine and decision policies configured in the admin UI.</li>
+            </ol>
+          </article>
+
+          <article class="sdk-checklist">
+            <p class="service-index">Naming</p>
+            <h2>How to read the package names</h2>
+            <ol>
+              <li>Publishers install 1 of 2 Maven artifacts: `com.yuktinai:amos-sdk-admob` or `com.yuktinai:amos-sdk`.</li>
+              <li>The repo uses matching Gradle module names: `:amos-sdk-admob` and `:amos-sdk`.</li>
+              <li>Android app code imports Kotlin packages such as `com.yuktinai.amos.sdk` and `com.yuktinai.amos.sdk.admob`.</li>
+              <li>The artifact and Gradle names now align, while Kotlin namespaces stay stable for app code.</li>
+            </ol>
+          </article>
+
+          <article class="sdk-checklist">
+            <p class="service-index">Policy model</p>
+            <h2>What the backend decision can control</h2>
+            <ol>
+              <li>Interstitial: enabled, preload, cooldown, max per session, override unit IDs.</li>
+              <li>Banner: enabled, refresh seconds, override unit IDs.</li>
+              <li>Rewarded: enabled, preload, promoted, reward type and amount, override unit IDs.</li>
+              <li>Paywall: enabled, variant, trigger.</li>
+              <li>CRM canvas and UA value multiplier.</li>
             </ol>
           </article>
         </section>
@@ -143,7 +225,8 @@ if (Monetization.isEventAllowed("paywall_click")) {
             <p class="service-index">Useful links</p>
             <h2>Developer handoff</h2>
             <ul>
-              <li><a href="https://central.sonatype.com/artifact/com.yuktinai/amos-sdk/1.0.1">View the Maven Central listing</a></li>
+              <li><a href="https://central.sonatype.com/artifact/com.yuktinai/amos-sdk-admob/1.0.1">View the AdMob SDK listing</a></li>
+              <li><a href="https://central.sonatype.com/artifact/com.yuktinai/amos-sdk/1.0.1">View the AMOS base SDK listing</a></li>
               <li><a href="mailto:yuktinai2026@gmail.com?subject=AMOS%20SDK%20integration%20support">Request implementation support</a></li>
               <li><a href="contact.html">Contact Yuktinai for onboarding support</a></li>
             </ul>
@@ -156,6 +239,8 @@ if (Monetization.isEventAllowed("paywall_click")) {
               <li>A valid AMOS `API_KEY` and `APP_ID`.</li>
               <li>An agreed user identifier strategy for the host app.</li>
               <li>Android Internet permission in the app manifest.</li>
+              <li>An integration choice: `amos-sdk-admob` wrapper-serving or `amos-sdk` manual-serving.</li>
+              <li>If using the wrapper: AdMob app ID and local ad-unit group configuration.</li>
               <li>A clear place in the app where segment state will be consumed.</li>
             </ul>
           </article>

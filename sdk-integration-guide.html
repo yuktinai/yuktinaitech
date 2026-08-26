@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AMOS Android Integration Guide | Yuktinai Technologies</title>
+    <meta
+      name="description"
+      content="Detailed AMOS Android integration reference for publishers, including wrapper-serving and manual or hybrid AdMob examples, custom AdMob groups, and app-side configuration patterns."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" type="image/svg+xml" href="assets/images/logo-mark.svg" />
+    <link rel="stylesheet" href="assets/css/styles.css" />
+  </head>
+  <body>
+    <div class="page-noise"></div>
+    <div class="site-shell">
+      <header class="site-header">
+        <a class="brand" href="index.html" aria-label="Yuktinai Technologies home">
+          <img src="assets/images/logo-mark.svg" alt="" width="46" height="46" />
+          <span>
+            <strong>Yuktinai</strong>
+            <small>Technologies</small>
+          </span>
+        </a>
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+          Menu
+        </button>
+        <nav id="site-nav" class="site-nav">
+          <a href="index.html">Home</a>
+          <a class="active" href="sdk.html">SDK</a>
+          <a href="services.html">Services</a>
+          <a href="about.html">About</a>
+          <a href="contact.html">Contact</a>
+        </nav>
+      </header>
+
+      <main class="page-main">
+        <section class="page-hero narrow">
+          <p class="eyebrow">Android Reference</p>
+          <h1>Full AMOS integration examples for publishers.</h1>
+          <p>
+            This page is the longer technical reference for Android teams. Use it when the main SDK page is not enough and you want fuller code examples for wrapper-serving or manual or hybrid integration.
+          </p>
+        </section>
+
+        <section class="sdk-grid">
+          <article class="sdk-checklist">
+            <p class="service-index">Choose One</p>
+            <h2>Artifacts</h2>
+            <ul>
+              <li>`com.yuktinai:amos-sdk-admob:1.0.1` for wrapper-serving AdMob integration.</li>
+              <li>`com.yuktinai:amos-sdk:1.0.1` for manual or hybrid integration.</li>
+              <li>If the app team is integrating AdMob for the first time, start with `amos-sdk-admob`.</li>
+            </ul>
+          </article>
+
+          <article class="sdk-code">
+            <p class="service-index">Dependencies</p>
+            <h2>Repository and dependency setup</h2>
+            <pre><code>dependencyResolutionManagement {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+dependencies {
+    implementation("com.yuktinai:amos-sdk-admob:1.0.1")
+
+    // Or manual / hybrid
+    // implementation("com.yuktinai:amos-sdk:1.0.1")
+    // implementation("com.google.android.gms:play-services-ads:25.4.0")
+}</code></pre>
+          </article>
+        </section>
+
+        <section class="sdk-grid">
+          <article class="sdk-code">
+            <p class="service-index">Initialize</p>
+            <h2>Base SDK initialization</h2>
+            <pre><code>Monetization.init(
+    context = applicationContext,
+    apiKey = "YOUR_API_KEY",
+    appId = "YOUR_APP_ID",
+    userId = "publisher-user-123"
+) {
+    // Ready to use SDK helpers here
+}</code></pre>
+          </article>
+
+          <article class="sdk-checklist">
+            <p class="service-index">Important Note</p>
+            <h2>Is `getState()` required?</h2>
+            <ul>
+              <li>No. `Monetization.init(...)` is required.</li>
+              <li>`Monetization.getState()` is optional.</li>
+              <li>AMOS already uses `allowedEvents` and `allowedMetrics` internally for helper methods like `trackEventIfAllowed(...)`, `trackMetricIfAllowed(...)`, `isEventAllowed(...)`, and `isMetricAllowed(...)`.</li>
+              <li>Use `getState()` only if your app wants to inspect segment or allowlist state for its own UI, debugging, or custom gating logic.</li>
+            </ul>
+          </article>
+        </section>
+
+        <section class="sdk-grid">
+          <article class="sdk-code">
+            <p class="service-index">Config</p>
+            <h2>AdMobConfig with multiple custom groups</h2>
+            <pre><code>val adMobConfig = AdMobConfig(
+    interstitialGroups = mapOf(
+        AdMobConfig.DEFAULT_GROUP_REF to AdMobGroupConfig(
+            unitIds = listOf("ca-app-pub-xxx/111"),
+            preloadOnInit = true
+        ),
+        "interstitial_level_end" to AdMobGroupConfig(
+            unitIds = listOf("ca-app-pub-xxx/112", "ca-app-pub-xxx/113"),
+            allowFallbackToDefault = true
+        ),
+        "interstitial_store_entry" to AdMobGroupConfig(
+            unitIds = listOf("ca-app-pub-xxx/114")
+        )
+    ),
+    bannerGroups = mapOf(
+        AdMobConfig.DEFAULT_GROUP_REF to AdMobGroupConfig(
+            unitIds = listOf("ca-app-pub-xxx/221")
+        ),
+        "banner_content" to AdMobGroupConfig(
+            unitIds = listOf("ca-app-pub-xxx/222", "ca-app-pub-xxx/223"),
+            allowFallbackToDefault = true
+        ),
+        "banner_home_header" to AdMobGroupConfig(
+            unitIds = listOf("ca-app-pub-xxx/224")
+        )
+    ),
+    rewardedGroups = mapOf(
+        AdMobConfig.DEFAULT_GROUP_REF to AdMobGroupConfig(
+            unitIds = listOf("ca-app-pub-xxx/331"),
+            preloadOnInit = true
+        ),
+        "rewarded_bonus_claim" to AdMobGroupConfig(
+            unitIds = listOf("ca-app-pub-xxx/332"),
+            preloadOnInit = true,
+            allowFallbackToDefault = true
+        )
+    )
+)</code></pre>
+          </article>
+
+          <article class="sdk-code">
+            <p class="service-index">Optional Structure</p>
+            <h2>Externalize AdMobConfig into its own provider</h2>
+            <pre><code>object PublisherAdMobConfigProvider {
+    fun build(): AdMobConfig {
+        return AdMobConfig(
+            interstitialGroups = mapOf(
+                AdMobConfig.DEFAULT_GROUP_REF to AdMobGroupConfig(
+                    unitIds = listOf("ca-app-pub-xxx/111"),
+                    preloadOnInit = true
+                ),
+                "interstitial_level_end" to AdMobGroupConfig(
+                    unitIds = listOf("ca-app-pub-xxx/112"),
+                    allowFallbackToDefault = true
+                )
+            ),
+            bannerGroups = mapOf(
+                "banner_content" to AdMobGroupConfig(
+                    unitIds = listOf("ca-app-pub-xxx/222")
+                )
+            ),
+            rewardedGroups = mapOf(
+                "rewarded_bonus_claim" to AdMobGroupConfig(
+                    unitIds = listOf("ca-app-pub-xxx/332"),
+                    preloadOnInit = true
+                )
+            )
+        )
+    }
+}</code></pre>
+          </article>
+        </section>
+
+        <section class="sdk-grid">
+          <article class="sdk-code">
+            <p class="service-index">Wrapper Example</p>
+            <h2>Full `amos-sdk-admob` example</h2>
+            <pre><code>class MainActivity : AppCompatActivity() {
+    private lateinit var bannerContainer: FrameLayout
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        bannerContainer = findViewById(R.id.bannerContainer)
+
+        val adMobConfig = PublisherAdMobConfigProvider.build()
+        AmosAdMob.configure(adMobConfig)
+
+        Monetization.init(
+            context = this,
+            apiKey = BuildConfig.AMOS_API_KEY,
+            appId = BuildConfig.AMOS_APP_ID,
+            userId = "publisher-user-123"
+        ) {
+            AmosAdMob.initialize(this)
+        }
+
+        findViewById&lt;Button&gt;(R.id.interstitialButton).setOnClickListener {
+            AmosAdMob.showInterstitial(
+                activity = this,
+                groupRef = "interstitial_level_end",
+                onShown = { },
+                onDismissed = { },
+                onFailed = { error -&gt;
+                    Log.w("AMOS", "Interstitial failed: $error")
+                }
+            )
+        }
+
+        findViewById&lt;Button&gt;(R.id.rewardedButton).setOnClickListener {
+            AmosAdMob.showRewarded(
+                activity = this,
+                groupRef = "rewarded_bonus_claim",
+                onRewardEarned = {
+                    grantCoinsToUser()
+                },
+                onFailed = { error -&gt;
+                    Log.w("AMOS", "Rewarded failed: $error")
+                }
+            )
+        }
+
+        AmosAdMob.createBannerView(
+            context = this,
+            groupRef = "banner_content",
+            container = bannerContainer,
+            onLoaded = { },
+            onFailed = { error -&gt;
+                Log.w("AMOS", "Banner failed: $error")
+            }
+        )
+    }
+
+    private fun grantCoinsToUser() {
+        // Publisher reward logic
+    }
+}</code></pre>
+          </article>
+
+          <article class="sdk-checklist">
+            <p class="service-index">Wrapper usage</p>
+            <h2>When to pass custom groups</h2>
+            <ul>
+              <li>Use `interstitial_level_end` when the app has a level-end style interruption point.</li>
+              <li>Use `banner_content` when the banner belongs inside content or feed surfaces.</li>
+              <li>Use `rewarded_bonus_claim` when the app wants a reward-based flow.</li>
+              <li>If you want generic fallback behavior, omit `groupRef` and let the SDK use `default`.</li>
+            </ul>
+          </article>
+        </section>
+
+        <section class="sdk-grid">
+          <article class="sdk-code">
+            <p class="service-index">Manual Example</p>
+            <h2>Manual or hybrid interstitial example</h2>
+            <pre><code>private var interstitialAd: InterstitialAd? = null
+private val interstitialGroupRef = "interstitial_level_end"
+
+fun preloadInterstitial(context: Context) {
+    val request = Monetization.preloadAdMobInterstitial(interstitialGroupRef) ?: return
+
+    InterstitialAd.load(
+        context,
+        request.unitId,
+        AdRequest.Builder().build(),
+        object : InterstitialAdLoadCallback() {
+            override fun onAdLoaded(ad: InterstitialAd) {
+                interstitialAd = ad
+                Monetization.markAdMobInterstitialLoaded(request.groupRef, ad)
+            }
+
+            override fun onAdFailedToLoad(error: LoadAdError) {
+                interstitialAd = null
+                Monetization.markAdMobInterstitialLoadFailed(request.groupRef)
+            }
+        }
+    )
+}</code></pre>
+          </article>
+
+          <article class="sdk-code">
+            <p class="service-index">More helper calls</p>
+            <h2>Manual or hybrid banner and rewarded examples</h2>
+            <pre><code>val bannerRequest = Monetization.getAdMobBannerRequest("banner_content")
+val rewardedRequest = Monetization.preloadAdMobRewarded("rewarded_bonus_claim")
+
+// Later in your own ads layer:
+Monetization.markAdMobBannerLoaded("banner_content", bannerView)
+Monetization.markAdMobRewardedLoaded("rewarded_bonus_claim", rewardedAd)
+
+// After a real show:
+Monetization.recordAdMobRewardedShown("rewarded_bonus_claim")</code></pre>
+          </article>
+        </section>
+
+        <section class="sdk-links">
+          <article class="sdk-link-card">
+            <p class="service-index">Recommended flow</p>
+            <h2>Best first integration path</h2>
+            <ul>
+              <li>Start with `amos-sdk-admob` if AdMob is the only current provider.</li>
+              <li>Keep one `default` group per ad type, then add only the custom groups your app really uses.</li>
+              <li>Move `AdMobConfig` into its own provider object if you want cleaner app architecture.</li>
+              <li>Use `Monetization.getState()` only if the app immediately needs segment or allowlist data.</li>
+            </ul>
+          </article>
+
+          <article class="sdk-link-card">
+            <p class="service-index">Back to overview</p>
+            <h2>Use the shorter SDK page too</h2>
+            <ul>
+              <li><a href="sdk.html">Return to the main SDK overview page</a></li>
+              <li><a href="https://central.sonatype.com/artifact/com.yuktinai/amos-sdk-admob/1.0.1">View the AdMob SDK listing</a></li>
+              <li><a href="https://central.sonatype.com/artifact/com.yuktinai/amos-sdk/1.0.1">View the base SDK listing</a></li>
+              <li><a href="contact.html">Request onboarding help</a></li>
+            </ul>
+          </article>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <p>&copy; <span id="year"></span> Yuktinai Technologies</p>
+        <div>
+          <a href="index.html">Home</a>
+          <a href="sdk.html">SDK</a>
+          <a href="services.html">Services</a>
+          <a href="contact.html">Contact</a>
+        </div>
+      </footer>
+    </div>
+
+    <script src="assets/js/main.js"></script>
+  </body>
+</html>

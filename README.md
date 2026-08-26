@@ -6,6 +6,7 @@ Simple static marketing website for Yuktinai Technologies.
 
 - `index.html`
 - `sdk.html`
+- `sdk-integration-guide.html`
 - `services.html`
 - `about.html`
 - `contact.html`

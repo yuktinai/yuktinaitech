@@ -57,6 +57,7 @@
               <li>`com.yuktinai:amos-sdk-admob:1.0.1` for wrapper-serving AdMob integration.</li>
               <li>`com.yuktinai:amos-sdk:1.0.1` for manual or hybrid integration.</li>
               <li>If the app team is integrating AdMob for the first time, start with `amos-sdk-admob`.</li>
+              <li>Use decision-policy provider `admob` for wrapper serving and `none` for manual or hybrid serving.</li>
             </ul>
           </article>
 
@@ -102,6 +103,7 @@ dependencies {
               <li>`Monetization.getState()` is optional.</li>
               <li>AMOS already uses `allowedEvents` and `allowedMetrics` internally for helper methods like `trackEventIfAllowed(...)`, `trackMetricIfAllowed(...)`, `isEventAllowed(...)`, and `isMetricAllowed(...)`.</li>
               <li>Use `getState()` only if your app wants to inspect segment or allowlist state for its own UI, debugging, or custom gating logic.</li>
+              <li>During QA, you can end the current session and call `Monetization.init(...)` again to force a fresh backend decision fetch.</li>
             </ul>
           </article>
         </section>

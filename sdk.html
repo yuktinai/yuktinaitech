@@ -95,6 +95,7 @@
               <li>Use `amos-sdk-admob` if you want the SDK to handle most AdMob load and show plumbing for you.</li>
               <li>Use `amos-sdk` if your app already has its own ads layer or if you want tighter control over the timing of ad loading and showing.</li>
               <li>Most first-time publishers integrating only AdMob should start with `amos-sdk-admob`.</li>
+              <li>In decision policy setup, use provider `admob` for wrapper serving and provider `none` for manual or hybrid serving.</li>
             </ul>
           </article>
 
@@ -159,6 +160,7 @@ dependencies {
     // Ready to use SDK helpers here
 }</code></pre>
             <p><strong>Important:</strong> `Monetization.init(...)` is required. Reading `Monetization.getState()` is optional. AMOS already uses the resolved allowlists internally when you call helper methods like `trackEventIfAllowed(...)`, `trackMetricIfAllowed(...)`, `isEventAllowed(...)`, and `isMetricAllowed(...)`.</p>
+            <p><strong>QA tip:</strong> if you change a backend decision policy and want a fresh evaluation immediately, end the active session and initialize again. The AMOS sample app exposes this as a `Restart Session` action.</p>
           </article>
 
           <article class="sdk-checklist">

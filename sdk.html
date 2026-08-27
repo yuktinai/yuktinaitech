@@ -66,8 +66,9 @@
             <ul>
               <li>Choose between a wrapper-serving AdMob SDK or a manual or hybrid base SDK.</li>
               <li>Configure multiple AdMob groups for different app surfaces such as level-end, content, and rewarded bonus moments.</li>
+              <li>Let the app use local config, backend-managed remote config, or remote with local fallback.</li>
               <li>Keep your app integration readable with helper methods instead of scattered ad-serving code.</li>
-              <li>Start simple, then externalize config later if your publishing setup grows.</li>
+              <li>Optionally let publishers manage remote AdMob groups through an app-scoped OTP-protected self-service portal.</li>
             </ul>
           </aside>
         </section>
@@ -176,8 +177,36 @@ dependencies {
         </section>
 
         <section class="sdk-grid">
+          <article class="sdk-checklist">
+            <p class="service-index">Step 4A</p>
+            <h2>Choose how AdMob config is sourced</h2>
+            <ul>
+              <li>`LOCAL` means the app provides `AdMobConfig` and the SDK uses only that config.</li>
+              <li>`REMOTE` means the SDK uses backend-managed app AdMob config.</li>
+              <li>`REMOTE_WITH_LOCAL_FALLBACK` means backend config is preferred and local config is used only when remote config is empty or unavailable.</li>
+              <li>For pure remote-managed publishers, local app config is optional.</li>
+              <li>For safer rollout, provide local config and use `REMOTE_WITH_LOCAL_FALLBACK`.</li>
+            </ul>
+          </article>
+
           <article class="sdk-code">
-            <p class="service-index">Step 4</p>
+            <p class="service-index">App Settings</p>
+            <h2>Remote config can be managed outside the app</h2>
+            <pre><code>Admin UI app settings
+- admobConfigMode = LOCAL | REMOTE | REMOTE_WITH_LOCAL_FALLBACK
+- guided remote AdMob group editor
+- optional publisher self-service enable
+
+Publisher self-service portal
+- app-scoped admin-domain link
+- registered publisher email + OTP
+- guided remote AdMob group CRUD for one app</code></pre>
+          </article>
+        </section>
+
+        <section class="sdk-grid">
+          <article class="sdk-code">
+            <p class="service-index">Step 4B</p>
             <h2>Define AdMob groups clearly</h2>
             <p>Groups let you separate ad inventory by app surface or UX moment. A publisher can keep one default group and add custom groups such as level-end, content banners, or rewarded bonus screens.</p>
             <pre><code>val adMobConfig = AdMobConfig(
@@ -286,6 +315,7 @@ dependencies {
             <p>This is the simpler path for first-time publishers using AdMob.</p>
             <pre><code>val adMobConfig = PublisherAdMobConfigProvider.build()
 
+// Optional in REMOTE mode
 AmosAdMob.configure(adMobConfig)
 
 Monetization.init(this, "YOUR_API_KEY", "YOUR_APP_ID", "publisher-user-123") {
@@ -321,10 +351,10 @@ AmosAdMob.createBannerView(
             <p class="service-index">Wrapper flow</p>
             <h2>How publishers typically use it</h2>
             <ol>
-              <li>Build `AdMobConfig` once.</li>
-              <li>Call `AmosAdMob.configure(...)`.</li>
-              <li>Initialize `Monetization`.</li>
-              <li>Call `AmosAdMob.initialize(...)`.</li>
+              <li>Choose `LOCAL`, `REMOTE`, or `REMOTE_WITH_LOCAL_FALLBACK` in app settings.</li>
+              <li>Build `AdMobConfig` if local or fallback behavior is needed.</li>
+              <li>Call `AmosAdMob.configure(...)` when local config is being used.</li>
+              <li>Initialize `Monetization` and then `AmosAdMob.initialize(...)`.</li>
               <li>Use group refs such as `interstitial_level_end` or `banner_content` from your app screens.</li>
               <li>Keep reward grants and UX decisions in your own app code.</li>
             </ol>

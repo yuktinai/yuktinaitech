@@ -109,6 +109,34 @@ dependencies {
         </section>
 
         <section class="sdk-grid">
+          <article class="sdk-checklist">
+            <p class="service-index">Config Source</p>
+            <h2>How the SDK chooses AdMob config</h2>
+            <ul>
+              <li>`LOCAL` uses app-provided `AdMobConfig` only.</li>
+              <li>`REMOTE` uses backend-managed app AdMob config only.</li>
+              <li>`REMOTE_WITH_LOCAL_FALLBACK` prefers remote config and falls back to app local config when remote config is empty or unavailable.</li>
+              <li>For `REMOTE`, local app config is optional.</li>
+              <li>For `REMOTE_WITH_LOCAL_FALLBACK`, local app config is recommended.</li>
+            </ul>
+          </article>
+
+          <article class="sdk-code">
+            <p class="service-index">Publisher Operations</p>
+            <h2>Remote AdMob config can be managed outside the app</h2>
+            <pre><code>Admin UI app settings
+- admobConfigMode = LOCAL | REMOTE | REMOTE_WITH_LOCAL_FALLBACK
+- guided remote AdMob group editor
+- optional publisher self-service portal
+
+Publisher self-service portal
+- app-scoped admin-domain link
+- registered publisher email + OTP
+- guided remote AdMob group editor for one app only</code></pre>
+          </article>
+        </section>
+
+        <section class="sdk-grid">
           <article class="sdk-code">
             <p class="service-index">Config</p>
             <h2>AdMobConfig with multiple custom groups</h2>
@@ -199,6 +227,7 @@ dependencies {
         bannerContainer = findViewById(R.id.bannerContainer)
 
         val adMobConfig = PublisherAdMobConfigProvider.build()
+        // Optional if this app is fully REMOTE-managed
         AmosAdMob.configure(adMobConfig)
 
         Monetization.init(
@@ -315,6 +344,7 @@ Monetization.recordAdMobRewardedShown("rewarded_bonus_claim")</code></pre>
             <ul>
               <li>Start with `amos-sdk-admob` if AdMob is the only current provider.</li>
               <li>Keep one `default` group per ad type, then add only the custom groups your app really uses.</li>
+              <li>Use `REMOTE_WITH_LOCAL_FALLBACK` if you want backend-managed control with safer local fallback behavior.</li>
               <li>Move `AdMobConfig` into its own provider object if you want cleaner app architecture.</li>
               <li>Use `Monetization.getState()` only if the app immediately needs segment or allowlist data.</li>
             </ul>

@@ -54,8 +54,8 @@
             <p class="service-index">Choose One</p>
             <h2>Artifacts</h2>
             <ul>
-              <li>`com.yuktinai:amos-sdk-admob:1.0.2` for wrapper-serving AdMob integration.</li>
-              <li>`com.yuktinai:amos-sdk:1.0.2` for manual or hybrid integration.</li>
+              <li>`com.yuktinai:amos-sdk-admob:1.0.3` for wrapper-serving AdMob integration.</li>
+              <li>`com.yuktinai:amos-sdk:1.0.3` for manual or hybrid integration.</li>
               <li>If the app team is integrating AdMob for the first time, start with `amos-sdk-admob`.</li>
               <li>Use decision-policy provider `admob` for wrapper serving and `none` for manual or hybrid serving.</li>
             </ul>
@@ -72,10 +72,10 @@
 }
 
 dependencies {
-    implementation("com.yuktinai:amos-sdk-admob:1.0.2")
+    implementation("com.yuktinai:amos-sdk-admob:1.0.3")
 
     // Or manual / hybrid
-    // implementation("com.yuktinai:amos-sdk:1.0.2")
+    // implementation("com.yuktinai:amos-sdk:1.0.3")
     // implementation("com.google.android.gms:play-services-ads:25.4.0")
 }</code></pre>
           </article>
@@ -113,11 +113,11 @@ dependencies {
             <p class="service-index">Config Source</p>
             <h2>How the SDK chooses AdMob config</h2>
             <ul>
-              <li>`LOCAL` uses app-provided `AdMobConfig` only.</li>
+              <li>`LOCAL` is the default path for all publishers and uses app-provided `AdMobConfig` only.</li>
+              <li>`REMOTE` and `REMOTE_WITH_LOCAL_FALLBACK` are managed options enabled by Yuktinai.</li>
               <li>`REMOTE` uses backend-managed app AdMob config only.</li>
               <li>`REMOTE_WITH_LOCAL_FALLBACK` prefers remote config and falls back to app local config when remote config is empty or unavailable.</li>
-              <li>For `REMOTE`, local app config is optional.</li>
-              <li>For `REMOTE_WITH_LOCAL_FALLBACK`, local app config is recommended.</li>
+              <li>If you want remote-managed AdMob config for your app, contact Yuktinai first.</li>
             </ul>
           </article>
 
@@ -132,7 +132,9 @@ dependencies {
 Publisher self-service portal
 - app-scoped admin-domain link
 - registered publisher email + OTP
-- guided remote AdMob group editor for one app only</code></pre>
+- guided remote AdMob group editor for one app only
+
+Remote modes are enabled only for managed publisher rollouts.</code></pre>
           </article>
         </section>
 
@@ -227,7 +229,8 @@ Publisher self-service portal
         bannerContainer = findViewById(R.id.bannerContainer)
 
         val adMobConfig = PublisherAdMobConfigProvider.build()
-        // Optional if this app is fully REMOTE-managed
+        // Required for LOCAL
+        // Optional only if Yuktinai has enabled REMOTE for this app
         AmosAdMob.configure(adMobConfig)
 
         Monetization.init(
@@ -344,7 +347,8 @@ Monetization.recordAdMobRewardedShown("rewarded_bonus_claim")</code></pre>
             <ul>
               <li>Start with `amos-sdk-admob` if AdMob is the only current provider.</li>
               <li>Keep one `default` group per ad type, then add only the custom groups your app really uses.</li>
-              <li>Use `REMOTE_WITH_LOCAL_FALLBACK` if you want backend-managed control with safer local fallback behavior.</li>
+              <li>`LOCAL` is the standard publisher setup.</li>
+              <li>Use `REMOTE` or `REMOTE_WITH_LOCAL_FALLBACK` only after Yuktinai enables that rollout path for your app.</li>
               <li>Move `AdMobConfig` into its own provider object if you want cleaner app architecture.</li>
               <li>Use `Monetization.getState()` only if the app immediately needs segment or allowlist data.</li>
             </ul>
@@ -355,8 +359,8 @@ Monetization.recordAdMobRewardedShown("rewarded_bonus_claim")</code></pre>
             <h2>Use the shorter SDK page too</h2>
             <ul>
               <li><a href="sdk.html">Return to the main SDK overview page</a></li>
-              <li><a href="https://central.sonatype.com/artifact/com.yuktinai/amos-sdk-admob/1.0.2">View the AdMob SDK listing</a></li>
-              <li><a href="https://central.sonatype.com/artifact/com.yuktinai/amos-sdk/1.0.2">View the base SDK listing</a></li>
+              <li><a href="https://central.sonatype.com/artifact/com.yuktinai/amos-sdk-admob/1.0.3">View the AdMob SDK listing</a></li>
+              <li><a href="https://central.sonatype.com/artifact/com.yuktinai/amos-sdk/1.0.3">View the base SDK listing</a></li>
               <li><a href="contact.html">Request onboarding help</a></li>
             </ul>
           </article>

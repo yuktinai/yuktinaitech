@@ -54,7 +54,7 @@
               <a class="button button-secondary" href="contact.html">Request onboarding help</a>
             </div>
             <div class="sdk-inline-links">
-              <span class="sdk-badge">Version 1.0.2</span>
+              <span class="sdk-badge">Version 1.0.3</span>
               <span class="sdk-badge">Maven Central</span>
               <span class="sdk-badge">Min SDK 24</span>
             </div>
@@ -76,11 +76,11 @@
         <section class="sdk-metrics">
           <article class="sdk-metric-card">
             <strong>Wrapper Artifact</strong>
-            <span>`com.yuktinai:amos-sdk-admob:1.0.2`</span>
+            <span>`com.yuktinai:amos-sdk-admob:1.0.3`</span>
           </article>
           <article class="sdk-metric-card">
             <strong>Base Artifact</strong>
-            <span>`com.yuktinai:amos-sdk:1.0.2`</span>
+            <span>`com.yuktinai:amos-sdk:1.0.3`</span>
           </article>
           <article class="sdk-metric-card">
             <strong>Java Target</strong>
@@ -113,10 +113,10 @@
 
 dependencies {
     // Wrapper-serving AdMob integration
-    implementation("com.yuktinai:amos-sdk-admob:1.0.2")
+    implementation("com.yuktinai:amos-sdk-admob:1.0.3")
 
     // Or manual / hybrid serving
-    // implementation("com.yuktinai:amos-sdk:1.0.2")
+    // implementation("com.yuktinai:amos-sdk:1.0.3")
     // implementation("com.google.android.gms:play-services-ads:25.4.0")
 }</code></pre>
           </article>
@@ -181,11 +181,11 @@ dependencies {
             <p class="service-index">Step 4A</p>
             <h2>Choose how AdMob config is sourced</h2>
             <ul>
-              <li>`LOCAL` means the app provides `AdMobConfig` and the SDK uses only that config.</li>
+              <li>`LOCAL` is the default path for all publishers. The app provides `AdMobConfig` and the SDK uses only that config.</li>
+              <li>`REMOTE` and `REMOTE_WITH_LOCAL_FALLBACK` are managed rollout options enabled by Yuktinai.</li>
               <li>`REMOTE` means the SDK uses backend-managed app AdMob config.</li>
               <li>`REMOTE_WITH_LOCAL_FALLBACK` means backend config is preferred and local config is used only when remote config is empty or unavailable.</li>
-              <li>For pure remote-managed publishers, local app config is optional.</li>
-              <li>For safer rollout, provide local config and use `REMOTE_WITH_LOCAL_FALLBACK`.</li>
+              <li>If you want remote-managed AdMob config for your app, contact Yuktinai to enable that setup.</li>
             </ul>
           </article>
 
@@ -200,7 +200,9 @@ dependencies {
 Publisher self-service portal
 - app-scoped admin-domain link
 - registered publisher email + OTP
-- guided remote AdMob group CRUD for one app</code></pre>
+- guided remote AdMob group CRUD for one app
+
+Remote modes are enabled only for managed publisher rollouts.</code></pre>
           </article>
         </section>
 
@@ -315,7 +317,8 @@ Publisher self-service portal
             <p>This is the simpler path for first-time publishers using AdMob.</p>
             <pre><code>val adMobConfig = PublisherAdMobConfigProvider.build()
 
-// Optional in REMOTE mode
+// Required for LOCAL
+// Optional only if Yuktinai has enabled REMOTE for your app
 AmosAdMob.configure(adMobConfig)
 
 Monetization.init(this, "YOUR_API_KEY", "YOUR_APP_ID", "publisher-user-123") {
@@ -352,7 +355,9 @@ AmosAdMob.createBannerView(
             <h2>How publishers typically use it</h2>
             <ol>
               <li>Choose `LOCAL`, `REMOTE`, or `REMOTE_WITH_LOCAL_FALLBACK` in app settings.</li>
-              <li>Build `AdMobConfig` if local or fallback behavior is needed.</li>
+              <li>`LOCAL` is the standard publisher setup.</li>
+              <li>Build `AdMobConfig` for the normal app integration path.</li>
+              <li>Ask Yuktinai before using `REMOTE` or `REMOTE_WITH_LOCAL_FALLBACK`.</li>
               <li>Call `AmosAdMob.configure(...)` when local config is being used.</li>
               <li>Initialize `Monetization` and then `AmosAdMob.initialize(...)`.</li>
               <li>Use group refs such as `interstitial_level_end` or `banner_content` from your app screens.</li>
@@ -448,8 +453,8 @@ Monetization.trackMetricsIfAllowed(
             <h2>Publisher handoff</h2>
             <ul>
               <li><a href="sdk-integration-guide.html">Open the full Android integration code guide</a></li>
-              <li><a href="https://central.sonatype.com/artifact/com.yuktinai/amos-sdk-admob/1.0.2">View the AdMob SDK listing</a></li>
-              <li><a href="https://central.sonatype.com/artifact/com.yuktinai/amos-sdk/1.0.2">View the base SDK listing</a></li>
+              <li><a href="https://central.sonatype.com/artifact/com.yuktinai/amos-sdk-admob/1.0.3">View the AdMob SDK listing</a></li>
+              <li><a href="https://central.sonatype.com/artifact/com.yuktinai/amos-sdk/1.0.3">View the base SDK listing</a></li>
               <li><a href="mailto:yuktinai2026@gmail.com?subject=AMOS%20SDK%20integration%20support">Request implementation support</a></li>
               <li><a href="contact.html">Contact Yuktinai for onboarding help</a></li>
             </ul>

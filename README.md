@@ -25,8 +25,8 @@ Open `index.html` in a browser, or serve the folder with any static file server.
 
 The SDK pages currently document:
 
-- `com.yuktinai:amos-sdk-admob:1.0.3`
-- `com.yuktinai:amos-sdk:1.0.3`
+- `com.yuktinai:amos-sdk-admob:1.0.4`
+- `com.yuktinai:amos-sdk:1.0.4`
 - local AdMob config
 - app-scoped remote AdMob config
 - `LOCAL`, `REMOTE`, and `REMOTE_WITH_LOCAL_FALLBACK` modes

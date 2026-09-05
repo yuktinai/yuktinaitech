@@ -6,7 +6,7 @@
     <title>AMOS SDK | Yuktinai Technologies</title>
     <meta
       name="description"
-      content="Publisher-first Android integration guide for the AMOS SDK. Choose the right artifact, set up AdMob groups, initialize the SDK, and integrate interstitial, banner, and rewarded ads smoothly."
+      content="Publisher-first Android integration guide for the AMOS SDK. Choose the right artifact, set up AdMob groups, initialize the SDK, and integrate interstitial, banner, rewarded, native, and app-open ads smoothly."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -46,7 +46,7 @@
             <p class="eyebrow">Android SDK</p>
             <h1>Publisher-first AMOS SDK integration for Android apps.</h1>
             <p>
-              This page is a practical onboarding guide for publishers integrating AMOS for the first time. It explains which artifact to choose, how to configure AdMob groups, and how to wire interstitial, banner, and rewarded flows with copy-pasteable examples.
+              This page is a practical onboarding guide for publishers integrating AMOS for the first time. It explains which artifact to choose, how to configure AdMob groups, and how to wire interstitial, banner, rewarded, native, and app-open flows with copy-pasteable examples.
             </p>
             <div class="hero-actions">
               <a class="button button-primary" href="#choose-sdk">Start integration</a>
@@ -65,7 +65,7 @@
             <h2>A smoother integration path without forcing one serving model.</h2>
             <ul>
               <li>Choose between a wrapper-serving AdMob SDK or a manual or hybrid base SDK.</li>
-              <li>Configure multiple AdMob groups for different app surfaces such as level-end, content, and rewarded bonus moments.</li>
+              <li>Configure multiple AdMob groups for different app surfaces such as level-end, content, rewarded bonus, native feed, and app-open moments.</li>
               <li>Let the app use local config, backend-managed remote config, or remote with local fallback.</li>
               <li>Keep your app integration readable with helper methods instead of scattered ad-serving code.</li>
               <li>Optionally let publishers manage remote AdMob groups through an app-scoped OTP-protected self-service portal.</li>
@@ -210,7 +210,7 @@ Remote modes are enabled only for managed publisher rollouts.</code></pre>
           <article class="sdk-code">
             <p class="service-index">Step 4B</p>
             <h2>Define AdMob groups clearly</h2>
-            <p>Groups let you separate ad inventory by app surface or UX moment. A publisher can keep one default group and add custom groups such as level-end, content banners, or rewarded bonus screens.</p>
+            <p>Groups let you separate ad inventory by app surface or UX moment. A publisher can keep one default group and add custom groups such as level-end, content banners, rewarded bonus screens, native feed cards, or app-open starts.</p>
             <pre><code>val adMobConfig = AdMobConfig(
     interstitialGroups = mapOf(
         AdMobConfig.DEFAULT_GROUP_REF to AdMobGroupConfig(
@@ -247,6 +247,26 @@ Remote modes are enabled only for managed publisher rollouts.</code></pre>
             preloadOnInit = true,
             allowFallbackToDefault = true
         )
+    ),
+    nativeGroups = mapOf(
+        AdMobConfig.DEFAULT_GROUP_REF to AdMobGroupConfig(
+            unitIds = listOf("ca-app-pub-xxx/441")
+        ),
+        "native_feed_card" to AdMobGroupConfig(
+            unitIds = listOf("ca-app-pub-xxx/442", "ca-app-pub-xxx/443"),
+            allowFallbackToDefault = true
+        )
+    ),
+    appOpenGroups = mapOf(
+        AdMobConfig.DEFAULT_GROUP_REF to AdMobGroupConfig(
+            unitIds = listOf("ca-app-pub-xxx/551"),
+            preloadOnInit = true
+        ),
+        "app_open_cold_start" to AdMobGroupConfig(
+            unitIds = listOf("ca-app-pub-xxx/552"),
+            preloadOnInit = true,
+            allowFallbackToDefault = true
+        )
     )
 )</code></pre>
           </article>
@@ -259,6 +279,8 @@ Remote modes are enabled only for managed publisher rollouts.</code></pre>
               <li>Use `interstitial_level_end` when the app wants an interstitial after gameplay or a finished task.</li>
               <li>Use `banner_content` when the app wants banner inventory inside feed or content surfaces.</li>
               <li>Use `rewarded_bonus_claim` when the app wants a bonus or reward claim flow.</li>
+              <li>Use `native_feed_card` when the app renders native ad inventory inside a feed or card layout.</li>
+              <li>Use `app_open_cold_start` when the app wants app-open inventory during a cold-start or return-to-app moment.</li>
               <li>One group can contain multiple unit IDs, which makes rotation easier later.</li>
             </ul>
           </article>
@@ -290,6 +312,17 @@ Remote modes are enabled only for managed publisher rollouts.</code></pre>
             rewardedGroups = mapOf(
                 "rewarded_bonus_claim" to AdMobGroupConfig(
                     unitIds = listOf("ca-app-pub-xxx/332"),
+                    preloadOnInit = true
+                )
+            ),
+            nativeGroups = mapOf(
+                "native_feed_card" to AdMobGroupConfig(
+                    unitIds = listOf("ca-app-pub-xxx/442")
+                )
+            ),
+            appOpenGroups = mapOf(
+                "app_open_cold_start" to AdMobGroupConfig(
+                    unitIds = listOf("ca-app-pub-xxx/552"),
                     preloadOnInit = true
                 )
             )
@@ -347,7 +380,22 @@ AmosAdMob.createBannerView(
     context = this,
     groupRef = "banner_content",
     container = bannerContainer
-)</code></pre>
+)
+
+// Native request planning using a custom group.
+// Your app still owns the NativeAd layout and rendering.
+val nativeRequest = AmosAdMob.getNativeRequest("native_feed_card")
+if (nativeRequest != null) {
+    loadNativeAdWithYourRenderer(nativeRequest.unitId)
+}
+
+// App-open request planning using a custom group.
+// Record when the app-open ad is shown so AMOS can respect cooldown/session limits.
+val appOpenRequest = AmosAdMob.getAppOpenRequest("app_open_cold_start")
+if (appOpenRequest != null) {
+    loadAndShowAppOpenAd(appOpenRequest.unitId)
+    AmosAdMob.recordAppOpenShown(appOpenRequest.groupRef)
+}</code></pre>
           </article>
 
           <article class="sdk-checklist">
@@ -360,7 +408,7 @@ AmosAdMob.createBannerView(
               <li>Ask Yuktinai before using `REMOTE` or `REMOTE_WITH_LOCAL_FALLBACK`.</li>
               <li>Call `AmosAdMob.configure(...)` when local config is being used.</li>
               <li>Initialize `Monetization` and then `AmosAdMob.initialize(...)`.</li>
-              <li>Use group refs such as `interstitial_level_end` or `banner_content` from your app screens.</li>
+              <li>Use group refs such as `interstitial_level_end`, `banner_content`, `native_feed_card`, or `app_open_cold_start` from your app screens.</li>
               <li>Keep reward grants and UX decisions in your own app code.</li>
             </ol>
           </article>
@@ -389,7 +437,19 @@ if (request != null) {
     )
 }</code></pre>
             <pre><code>val rewarded = Monetization.preloadAdMobRewarded("rewarded_bonus_claim")
-val banner = Monetization.getAdMobBannerRequest("banner_content")</code></pre>
+val banner = Monetization.getAdMobBannerRequest("banner_content")
+val native = Monetization.getAdMobNativeRequest("native_feed_card")
+val appOpen = Monetization.getAdMobAppOpenRequest("app_open_cold_start")
+
+if (native != null) {
+    loadNativeAdWithYourRenderer(native.unitId)
+    Monetization.markAdMobNativeLoaded(native.groupRef, nativeAd)
+}
+
+if (appOpen != null) {
+    loadAndShowAppOpenAd(appOpen.unitId)
+    Monetization.recordAdMobAppOpenShown(appOpen.groupRef)
+}</code></pre>
           </article>
 
           <article class="sdk-checklist">
@@ -442,7 +502,7 @@ Monetization.trackMetricsIfAllowed(
             <ul>
               <li>Start with `amos-sdk-admob` if AdMob is your only provider right now.</li>
               <li>Define `default` plus a few meaningful custom groups only where needed.</li>
-              <li>Validate one interstitial, one banner, and one rewarded flow first.</li>
+              <li>Validate one interstitial, one banner, one rewarded, one native, and one app-open flow first.</li>
               <li>Externalize `AdMobConfig` only after the initial integration is stable.</li>
               <li>Keep reward granting and screen timing in your app code.</li>
             </ul>

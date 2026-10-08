@@ -389,13 +389,163 @@ h3 {
 
 .sdk-metrics,
 .sdk-grid,
-.sdk-links {
+.sdk-links,
+.sdk-choice-grid {
   display: grid;
   gap: 14px;
 }
 
 .sdk-metrics {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.sdk-choice-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.sdk-connect-panel {
+  border: 1px solid var(--line);
+  background:
+    radial-gradient(circle at top left, rgba(116, 208, 255, 0.12), transparent 34%),
+    var(--panel-strong);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(14px);
+  border-radius: 30px;
+  overflow: hidden;
+}
+
+.sdk-connect-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: flex-start;
+  padding: 26px;
+  border-bottom: 1px solid var(--line);
+}
+
+.sdk-connect-header h2 {
+  margin: 0;
+  font-size: clamp(1.45rem, 3vw, 2.2rem);
+}
+
+.sdk-mode-tabs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  border-bottom: 1px solid var(--line);
+}
+
+.sdk-mode-tab {
+  display: grid;
+  gap: 6px;
+  min-height: 104px;
+  padding: 22px;
+  border: 0;
+  border-right: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--muted);
+  cursor: pointer;
+  font: inherit;
+  text-align: center;
+  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sdk-mode-tab:last-child {
+  border-right: 0;
+}
+
+.sdk-mode-tab span {
+  color: var(--text);
+  font-family: "Sora", sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.sdk-mode-tab small {
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.sdk-mode-tab:hover,
+.sdk-mode-tab.is-active {
+  background:
+    linear-gradient(135deg, rgba(116, 208, 255, 0.12), rgba(157, 241, 207, 0.07)),
+    rgba(255, 255, 255, 0.04);
+}
+
+.sdk-mode-tab.is-active {
+  box-shadow: inset 0 -2px 0 var(--brand);
+}
+
+.sdk-tab-panel {
+  display: none;
+  padding: 28px;
+}
+
+.sdk-tab-panel.is-active {
+  display: block;
+}
+
+.sdk-step-layout {
+  display: grid;
+  grid-template-columns: minmax(240px, 0.6fr) minmax(0, 1fr);
+  gap: 24px;
+}
+
+.sdk-step-list {
+  color: var(--muted);
+}
+
+.sdk-step-list h3 {
+  margin: 0 0 20px;
+  color: var(--text);
+}
+
+.sdk-step-list ol {
+  display: grid;
+  gap: 18px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: sdk-step;
+}
+
+.sdk-step-list li {
+  position: relative;
+  padding-left: 54px;
+  counter-increment: sdk-step;
+}
+
+.sdk-step-list li::before {
+  content: counter(sdk-step);
+  position: absolute;
+  left: 0;
+  top: 2px;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.04);
+  font-weight: 800;
+}
+
+.sdk-step-list strong {
+  display: block;
+  color: var(--text);
+  margin-bottom: 5px;
+}
+
+.sdk-step-list span {
+  display: block;
+  line-height: 1.55;
+}
+
+.sdk-code-stack {
+  display: grid;
+  gap: 14px;
 }
 
 .sdk-metric-card {
@@ -576,8 +726,24 @@ h3 {
   .contact-layout-simple,
   .sdk-grid,
   .sdk-hero,
-  .sdk-metrics {
+  .sdk-metrics,
+  .sdk-choice-grid,
+  .sdk-mode-tabs,
+  .sdk-step-layout {
     grid-template-columns: 1fr;
+  }
+
+  .sdk-connect-header {
+    flex-direction: column;
+  }
+
+  .sdk-mode-tab {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .sdk-mode-tab:last-child {
+    border-bottom: 0;
   }
 
   .hero {

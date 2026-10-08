@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AMOS SDK | Yuktinai Technologies</title>
+    <title>AMOS SDK Integration | Yuktinai Technologies</title>
     <meta
       name="description"
-      content="Publisher-first Android integration guide for the AMOS SDK. Choose the right artifact, set up AdMob groups, initialize the SDK, and integrate interstitial, banner, rewarded, native, and app-open ads smoothly."
+      content="Developer-friendly AMOS SDK integration guide with tabbed Kotlin native Android and React Native wrapper examples."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -43,68 +43,79 @@
       <main class="page-main">
         <section class="page-hero sdk-hero">
           <div>
-            <p class="eyebrow">Android SDK</p>
-            <h1>Publisher-first AMOS SDK integration for Android apps.</h1>
+            <p class="eyebrow">SDK Integration</p>
+            <h1>Connect AMOS to your app.</h1>
             <p>
-              This page is a practical onboarding guide for publishers integrating AMOS for the first time. It explains which artifact to choose, how to configure AdMob groups, and how to wire interstitial, banner, rewarded, native, and app-open flows with copy-pasteable examples.
+              Choose your app stack and copy the matching setup. AMOS supports Kotlin native Android SDKs and React Native wrapper packages for telemetry, decisioning, and optional managed AdMob serving.
             </p>
             <div class="hero-actions">
-              <a class="button button-primary" href="#choose-sdk">Start integration</a>
-              <a class="button button-secondary" href="sdk-integration-guide.html">Open full code guide</a>
+              <a class="button button-primary" href="#connect">Start setup</a>
+              <a class="button button-secondary" href="sdk-integration-guide.html">Open full guide</a>
               <a class="button button-secondary" href="contact.html">Request onboarding help</a>
             </div>
             <div class="sdk-inline-links">
-              <span class="sdk-badge">Version 1.0.4</span>
-              <span class="sdk-badge">Maven Central</span>
-              <span class="sdk-badge">Min SDK 24</span>
+              <span class="sdk-badge">Native SDK 1.0.10</span>
+              <span class="sdk-badge">RN core 2.0.6</span>
+              <span class="sdk-badge">RN AdMob 1.0.13</span>
             </div>
           </div>
 
           <aside class="sdk-summary">
-            <p class="service-index">What publishers get</p>
-            <h2>A smoother integration path without forcing one serving model.</h2>
+            <p class="service-index">Serving control</p>
+            <h2>Keep rollout safe.</h2>
             <ul>
-              <li>Choose between a wrapper-serving AdMob SDK or a manual or hybrid base SDK.</li>
-              <li>Configure multiple AdMob groups for different app surfaces such as level-end, content, rewarded bonus, native feed, and app-open moments.</li>
-              <li>Let the app use local config, backend-managed remote config, or remote with local fallback.</li>
-              <li>Keep your app integration readable with helper methods instead of scattered ad-serving code.</li>
-              <li>Optionally let publishers manage remote AdMob groups through an app-scoped OTP-protected self-service portal.</li>
+              <li>Use AMOS for events, metrics, bootstrap, and decisions in every integration mode.</li>
+              <li>Use AMOS-controlled AdMob serving only when the publisher app is ready.</li>
+              <li>Set `amos_ad_serving_enabled=false` remotely to fall back to the app's local ad loading path.</li>
             </ul>
           </aside>
         </section>
 
-        <section class="sdk-metrics">
-          <article class="sdk-metric-card">
-            <strong>Wrapper Artifact</strong>
-            <span>`com.yuktinai:amos-sdk-admob:1.0.4`</span>
-          </article>
-          <article class="sdk-metric-card">
-            <strong>Base Artifact</strong>
-            <span>`com.yuktinai:amos-sdk:1.0.4`</span>
-          </article>
-          <article class="sdk-metric-card">
-            <strong>Java Target</strong>
-            <span>Java 11 bytecode</span>
-          </article>
-        </section>
+        <section id="connect" class="sdk-connect-panel" data-sdk-tabs>
+          <div class="sdk-connect-header">
+            <div>
+              <p class="eyebrow">Connect to your app</p>
+              <h2>Choose how you want to use AMOS</h2>
+            </div>
+            <a class="text-link" href="sdk-integration-guide.html">Need advanced native examples?</a>
+          </div>
 
-        <section id="choose-sdk" class="sdk-grid">
-          <article class="sdk-checklist">
-            <p class="service-index">Step 1</p>
-            <h2>Choose the right SDK</h2>
-            <ul>
-              <li>Use `amos-sdk-admob` if you want the SDK to handle most AdMob load and show plumbing for you.</li>
-              <li>Use `amos-sdk` if your app already has its own ads layer or if you want tighter control over the timing of ad loading and showing.</li>
-              <li>Most first-time publishers integrating only AdMob should start with `amos-sdk-admob`.</li>
-              <li>In decision policy setup, use provider `admob` for wrapper serving and provider `none` for manual or hybrid serving.</li>
-            </ul>
-          </article>
+          <div class="sdk-mode-tabs" role="tablist" aria-label="AMOS integration type">
+            <button class="sdk-mode-tab is-active" type="button" role="tab" aria-selected="true" data-sdk-tab="kotlin">
+              <span>Kotlin Native</span>
+              <small>Android SDK</small>
+            </button>
+            <button class="sdk-mode-tab" type="button" role="tab" aria-selected="false" data-sdk-tab="react-native">
+              <span>React Native</span>
+              <small>npm wrapper</small>
+            </button>
+          </div>
 
-          <article class="sdk-code">
-            <p class="service-index">Dependency Setup</p>
-            <h2>Add Maven Central and the SDK</h2>
-            <p>Configure repositories once in your Android project, then add the SDK artifact that matches your integration style.</p>
-            <pre><code>dependencyResolutionManagement {
+          <section class="sdk-tab-panel is-active" data-sdk-panel="kotlin">
+            <div class="sdk-step-layout">
+              <aside class="sdk-step-list">
+                <h3>Follow these steps</h3>
+                <ol>
+                  <li>
+                    <strong>Install packages</strong>
+                    <span>Add the Maven artifact for wrapper-serving or manual integration.</span>
+                  </li>
+                  <li>
+                    <strong>Initialize AMOS</strong>
+                    <span>Start the session with API key, app ID, and stable user ID.</span>
+                  </li>
+                  <li>
+                    <strong>Call SDK helpers</strong>
+                    <span>Track events, metrics, and show ads from the right app surface.</span>
+                  </li>
+                </ol>
+              </aside>
+
+              <div class="sdk-code-stack">
+                <article class="sdk-code">
+                  <p class="service-index">Install</p>
+                  <h2>Kotlin dependency setup</h2>
+                  <pre><code>dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
@@ -112,411 +123,159 @@
 }
 
 dependencies {
-    // Wrapper-serving AdMob integration
-    implementation("com.yuktinai:amos-sdk-admob:1.0.4")
+    // AMOS controls AdMob load/show helpers
+    implementation("com.yuktinai:amos-sdk-admob:1.0.10")
 
-    // Or manual / hybrid serving
-    // implementation("com.yuktinai:amos-sdk:1.0.4")
-    // implementation("com.google.android.gms:play-services-ads:25.4.0")
+    // Or core-only/manual serving
+    // implementation("com.yuktinai:amos-sdk:1.0.10")
 }</code></pre>
-          </article>
-        </section>
+                </article>
 
-        <section class="sdk-grid">
-          <article class="sdk-checklist">
-            <p class="service-index">Step 2</p>
-            <h2>Prepare the app basics</h2>
-            <ul>
-              <li>Add Android Internet permission in the manifest.</li>
-              <li>Keep your AMOS `API_KEY`, `APP_ID`, and publisher user ID ready.</li>
-              <li>If you use `amos-sdk-admob`, also keep your AdMob application ID ready.</li>
-            </ul>
-          </article>
-
-          <article class="sdk-code">
-            <p class="service-index">Manifest</p>
-            <h2>Add required app entries</h2>
-            <pre><code>&lt;uses-permission android:name="android.permission.INTERNET" /&gt;</code></pre>
-            <pre><code>android {
-    defaultConfig {
-        // Only for amos-sdk-admob
-        manifestPlaceholders["amosAdMobAppId"] =
-            "ca-app-pub-xxxxxxxxxxxxxxxx~yyyyyyyyyy"
-    }
-}</code></pre>
-          </article>
-        </section>
-
-        <section class="sdk-grid">
-          <article class="sdk-code">
-            <p class="service-index">Step 3</p>
-            <h2>Initialize AMOS in your app</h2>
-            <p>The first integration step in code is to initialize `Monetization` with your AMOS credentials and the current app user ID.</p>
-            <pre><code>Monetization.init(
+                <article class="sdk-code">
+                  <p class="service-index">Initialize</p>
+                  <h2>Start AMOS early in app startup</h2>
+                  <pre><code>Monetization.init(
     context = applicationContext,
     apiKey = "YOUR_API_KEY",
     appId = "YOUR_APP_ID",
     userId = "publisher-user-123"
 ) {
-    // Ready to use SDK helpers here
-}</code></pre>
-            <p><strong>Important:</strong> `Monetization.init(...)` is required. Reading `Monetization.getState()` is optional. AMOS already uses the resolved allowlists internally when you call helper methods like `trackEventIfAllowed(...)`, `trackMetricIfAllowed(...)`, `isEventAllowed(...)`, and `isMetricAllowed(...)`.</p>
-            <p><strong>QA tip:</strong> if you change a backend decision policy and want a fresh evaluation immediately, end the active session and initialize again. The AMOS sample app exposes this as a `Restart Session` action.</p>
-          </article>
-
-          <article class="sdk-checklist">
-            <p class="service-index">What this does</p>
-            <h2>What publishers should know</h2>
-            <ul>
-              <li>Initialization should happen early in app startup.</li>
-              <li>The same app user should keep the same `userId` for consistent tracking.</li>
-              <li>The callback is a good place to begin optional ad wrapper initialization.</li>
-              <li>You can safely keep app-side reward and placement decisions in your own UI code.</li>
-            </ul>
-          </article>
-        </section>
-
-        <section class="sdk-grid">
-          <article class="sdk-checklist">
-            <p class="service-index">Step 4A</p>
-            <h2>Choose how AdMob config is sourced</h2>
-            <ul>
-              <li>`LOCAL` is the default path for all publishers. The app provides `AdMobConfig` and the SDK uses only that config.</li>
-              <li>`REMOTE` and `REMOTE_WITH_LOCAL_FALLBACK` are managed rollout options enabled by Yuktinai.</li>
-              <li>`REMOTE` means the SDK uses backend-managed app AdMob config.</li>
-              <li>`REMOTE_WITH_LOCAL_FALLBACK` means backend config is preferred and local config is used only when remote config is empty or unavailable.</li>
-              <li>If you want remote-managed AdMob config for your app, contact Yuktinai to enable that setup.</li>
-            </ul>
-          </article>
-
-          <article class="sdk-code">
-            <p class="service-index">App Settings</p>
-            <h2>Remote config can be managed outside the app</h2>
-            <pre><code>Admin UI app settings
-- admobConfigMode = LOCAL | REMOTE | REMOTE_WITH_LOCAL_FALLBACK
-- guided remote AdMob group editor
-- optional publisher self-service enable
-
-Publisher self-service portal
-- app-scoped admin-domain link
-- registered publisher email + OTP
-- guided remote AdMob group CRUD for one app
-
-Remote modes are enabled only for managed publisher rollouts.</code></pre>
-          </article>
-        </section>
-
-        <section class="sdk-grid">
-          <article class="sdk-code">
-            <p class="service-index">Step 4B</p>
-            <h2>Define AdMob groups clearly</h2>
-            <p>Groups let you separate ad inventory by app surface or UX moment. A publisher can keep one default group and add custom groups such as level-end, content banners, rewarded bonus screens, native feed cards, or app-open starts.</p>
-            <pre><code>val adMobConfig = AdMobConfig(
-    interstitialGroups = mapOf(
-        AdMobConfig.DEFAULT_GROUP_REF to AdMobGroupConfig(
-            unitIds = listOf("ca-app-pub-xxx/111"),
-            preloadOnInit = true
-        ),
-        "interstitial_level_end" to AdMobGroupConfig(
-            unitIds = listOf("ca-app-pub-xxx/112", "ca-app-pub-xxx/113"),
-            allowFallbackToDefault = true
-        ),
-        "interstitial_store_entry" to AdMobGroupConfig(
-            unitIds = listOf("ca-app-pub-xxx/114")
-        )
-    ),
-    bannerGroups = mapOf(
-        AdMobConfig.DEFAULT_GROUP_REF to AdMobGroupConfig(
-            unitIds = listOf("ca-app-pub-xxx/221")
-        ),
-        "banner_content" to AdMobGroupConfig(
-            unitIds = listOf("ca-app-pub-xxx/222", "ca-app-pub-xxx/223"),
-            allowFallbackToDefault = true
-        ),
-        "banner_home_header" to AdMobGroupConfig(
-            unitIds = listOf("ca-app-pub-xxx/224")
-        )
-    ),
-    rewardedGroups = mapOf(
-        AdMobConfig.DEFAULT_GROUP_REF to AdMobGroupConfig(
-            unitIds = listOf("ca-app-pub-xxx/331"),
-            preloadOnInit = true
-        ),
-        "rewarded_bonus_claim" to AdMobGroupConfig(
-            unitIds = listOf("ca-app-pub-xxx/332"),
-            preloadOnInit = true,
-            allowFallbackToDefault = true
-        )
-    ),
-    nativeGroups = mapOf(
-        AdMobConfig.DEFAULT_GROUP_REF to AdMobGroupConfig(
-            unitIds = listOf("ca-app-pub-xxx/441")
-        ),
-        "native_feed_card" to AdMobGroupConfig(
-            unitIds = listOf("ca-app-pub-xxx/442", "ca-app-pub-xxx/443"),
-            allowFallbackToDefault = true
-        )
-    ),
-    appOpenGroups = mapOf(
-        AdMobConfig.DEFAULT_GROUP_REF to AdMobGroupConfig(
-            unitIds = listOf("ca-app-pub-xxx/551"),
-            preloadOnInit = true
-        ),
-        "app_open_cold_start" to AdMobGroupConfig(
-            unitIds = listOf("ca-app-pub-xxx/552"),
-            preloadOnInit = true,
-            allowFallbackToDefault = true
-        )
-    )
-)</code></pre>
-          </article>
-
-          <article class="sdk-checklist">
-            <p class="service-index">How to think about groups</p>
-            <h2>Keep naming based on app surfaces</h2>
-            <ul>
-              <li>Use `default` as the safe generic fallback for each ad type.</li>
-              <li>Use `interstitial_level_end` when the app wants an interstitial after gameplay or a finished task.</li>
-              <li>Use `banner_content` when the app wants banner inventory inside feed or content surfaces.</li>
-              <li>Use `rewarded_bonus_claim` when the app wants a bonus or reward claim flow.</li>
-              <li>Use `native_feed_card` when the app renders native ad inventory inside a feed or card layout.</li>
-              <li>Use `app_open_cold_start` when the app wants app-open inventory during a cold-start or return-to-app moment.</li>
-              <li>One group can contain multiple unit IDs, which makes rotation easier later.</li>
-            </ul>
-          </article>
-        </section>
-
-        <section class="sdk-grid">
-          <article class="sdk-code">
-            <p class="service-index">Optional Setup</p>
-            <h2>Externalize AdMobConfig if you want</h2>
-            <p>A publisher does not have to hardcode all groups directly in one Activity. You can keep the config in a local provider class, asset, or remote app config layer and build `AdMobConfig` before passing it to the SDK.</p>
-            <pre><code>object PublisherAdMobConfigProvider {
-    fun build(): AdMobConfig {
-        return AdMobConfig(
-            interstitialGroups = mapOf(
-                AdMobConfig.DEFAULT_GROUP_REF to AdMobGroupConfig(
-                    unitIds = listOf("ca-app-pub-xxx/111"),
-                    preloadOnInit = true
-                ),
-                "interstitial_level_end" to AdMobGroupConfig(
-                    unitIds = listOf("ca-app-pub-xxx/112"),
-                    allowFallbackToDefault = true
-                )
-            ),
-            bannerGroups = mapOf(
-                "banner_content" to AdMobGroupConfig(
-                    unitIds = listOf("ca-app-pub-xxx/222")
-                )
-            ),
-            rewardedGroups = mapOf(
-                "rewarded_bonus_claim" to AdMobGroupConfig(
-                    unitIds = listOf("ca-app-pub-xxx/332"),
-                    preloadOnInit = true
-                )
-            ),
-            nativeGroups = mapOf(
-                "native_feed_card" to AdMobGroupConfig(
-                    unitIds = listOf("ca-app-pub-xxx/442")
-                )
-            ),
-            appOpenGroups = mapOf(
-                "app_open_cold_start" to AdMobGroupConfig(
-                    unitIds = listOf("ca-app-pub-xxx/552"),
-                    preloadOnInit = true
-                )
-            )
-        )
-    }
-}</code></pre>
-          </article>
-
-          <article class="sdk-checklist">
-            <p class="service-index">Good practice</p>
-            <h2>When to externalize config</h2>
-            <ul>
-              <li>Keep it inline if you have only a few unit IDs and a single app.</li>
-              <li>Move it into a provider object if you want cleaner app architecture.</li>
-              <li>Move it into assets or remote config only if your publishing operations really need it.</li>
-              <li>Use readable group names so developers know what each group is for without cross-checking spreadsheets.</li>
-            </ul>
-          </article>
-        </section>
-
-        <section class="sdk-grid">
-          <article class="sdk-code">
-            <p class="service-index">Wrapper Path</p>
-            <h2>Integrate with `amos-sdk-admob`</h2>
-            <p>This is the simpler path for first-time publishers using AdMob.</p>
-            <pre><code>val adMobConfig = PublisherAdMobConfigProvider.build()
-
-// Required for LOCAL
-// Optional only if Yuktinai has enabled REMOTE for your app
-AmosAdMob.configure(adMobConfig)
-
-Monetization.init(this, "YOUR_API_KEY", "YOUR_APP_ID", "publisher-user-123") {
+    AmosAdMob.configure(PublisherAdMobConfigProvider.build())
     AmosAdMob.initialize(this)
 }</code></pre>
-            <pre><code>// Interstitial using a custom group
-AmosAdMob.showInterstitial(
-    activity = this,
-    groupRef = "interstitial_level_end",
-    onShown = { },
-    onDismissed = { },
-    onFailed = { error -&gt; }
-)
+                </article>
 
-// Rewarded using a custom group
+                <article class="sdk-code">
+                  <p class="service-index">Use</p>
+                  <h2>Track and show from app surfaces</h2>
+                  <pre><code>Monetization.trackEventIfAllowed("image_selection")
+Monetization.trackMetricIfAllowed("device_model", Build.MODEL)
+
 AmosAdMob.showRewarded(
     activity = this,
     groupRef = "rewarded_bonus_claim",
-    onRewardEarned = {
-        grantCoinsToUser()
-    }
+    onRewardEarned = { grantCreditToUser() }
 )
 
-// Banner using a custom group
-AmosAdMob.createBannerView(
-    context = this,
-    groupRef = "banner_content",
-    container = bannerContainer
-)
-
-// Native request planning using a custom group.
-// Your app still owns the NativeAd layout and rendering.
-val nativeRequest = AmosAdMob.getNativeRequest("native_feed_card")
-if (nativeRequest != null) {
-    loadNativeAdWithYourRenderer(nativeRequest.unitId)
-}
-
-// App-open request planning using a custom group.
-// Record when the app-open ad is shown so AMOS can respect cooldown/session limits.
-val appOpenRequest = AmosAdMob.getAppOpenRequest("app_open_cold_start")
-if (appOpenRequest != null) {
-    loadAndShowAppOpenAd(appOpenRequest.unitId)
-    AmosAdMob.recordAppOpenShown(appOpenRequest.groupRef)
-}</code></pre>
-          </article>
-
-          <article class="sdk-checklist">
-            <p class="service-index">Wrapper flow</p>
-            <h2>How publishers typically use it</h2>
-            <ol>
-              <li>Choose `LOCAL`, `REMOTE`, or `REMOTE_WITH_LOCAL_FALLBACK` in app settings.</li>
-              <li>`LOCAL` is the standard publisher setup.</li>
-              <li>Build `AdMobConfig` for the normal app integration path.</li>
-              <li>Ask Yuktinai before using `REMOTE` or `REMOTE_WITH_LOCAL_FALLBACK`.</li>
-              <li>Call `AmosAdMob.configure(...)` when local config is being used.</li>
-              <li>Initialize `Monetization` and then `AmosAdMob.initialize(...)`.</li>
-              <li>Use group refs such as `interstitial_level_end`, `banner_content`, `native_feed_card`, or `app_open_cold_start` from your app screens.</li>
-              <li>Keep reward grants and UX decisions in your own app code.</li>
-            </ol>
-          </article>
-        </section>
-
-        <section class="sdk-grid">
-          <article class="sdk-code">
-            <p class="service-index">Manual Or Hybrid</p>
-            <h2>Integrate with `amos-sdk`</h2>
-            <p>Use this if your app already owns the AdMob objects and serving flow.</p>
-            <pre><code>val request = Monetization.getAdMobInterstitialRequest("interstitial_level_end")
-if (request != null) {
-    InterstitialAd.load(
-        context,
-        request.unitId,
-        AdRequest.Builder().build(),
-        object : InterstitialAdLoadCallback() {
-            override fun onAdLoaded(ad: InterstitialAd) {
-                Monetization.markAdMobInterstitialLoaded(request.groupRef, ad)
-            }
-
-            override fun onAdFailedToLoad(error: LoadAdError) {
-                Monetization.markAdMobInterstitialLoadFailed(request.groupRef)
-            }
-        }
-    )
-}</code></pre>
-            <pre><code>val rewarded = Monetization.preloadAdMobRewarded("rewarded_bonus_claim")
-val banner = Monetization.getAdMobBannerRequest("banner_content")
-val native = Monetization.getAdMobNativeRequest("native_feed_card")
-val appOpen = Monetization.getAdMobAppOpenRequest("app_open_cold_start")
-
-if (native != null) {
-    loadNativeAdWithYourRenderer(native.unitId)
-    Monetization.markAdMobNativeLoaded(native.groupRef, nativeAd)
-}
-
-if (appOpen != null) {
-    loadAndShowAppOpenAd(appOpen.unitId)
-    Monetization.recordAdMobAppOpenShown(appOpen.groupRef)
-}</code></pre>
-          </article>
-
-          <article class="sdk-checklist">
-            <p class="service-index">When to choose this</p>
-            <h2>Best fit for advanced publishers</h2>
-            <ul>
-              <li>Your app already has a reusable ads abstraction layer.</li>
-              <li>You want your app to decide the exact load and show timing.</li>
-              <li>You still want helper methods and group-aware request planning from AMOS.</li>
-              <li>You want to adopt AMOS gradually without replacing your existing ad-serving code immediately.</li>
-            </ul>
-          </article>
-        </section>
-
-        <section class="sdk-grid">
-          <article class="sdk-code">
-            <p class="service-index">Tracking</p>
-            <h2>Track events and metrics during runtime</h2>
-            <p>Publishers can use AMOS tracking helpers throughout the session.</p>
-            <pre><code>Monetization.trackEventIfAllowed("session_home_opened")
-Monetization.trackEventIfAllowed("rewarded_granted")
-
-Monetization.trackMetricIfAllowed("coins_balance", 1250)
-Monetization.trackMetricIfAllowed("user_level", 19)
-
-Monetization.trackMetricsIfAllowed(
-    mapOf(
-        "country_code" to "US",
-        "device_name" to Build.MODEL
-    )
+AmosAdMob.showInterstitial(
+    activity = this,
+    groupRef = "interstitial_level_end"
 )</code></pre>
-          </article>
+                </article>
+              </div>
+            </div>
+          </section>
 
-          <article class="sdk-checklist">
-            <p class="service-index">Session flow</p>
-            <h2>Keep the integration tidy</h2>
-            <ul>
-              <li>Initialize once when the app session starts.</li>
-              <li>Track meaningful app events and app metrics during usage.</li>
-              <li>Use group refs only where the app truly needs different inventory treatment.</li>
-              <li>Call `Monetization.endSession()` from your own session lifecycle manager when appropriate.</li>
-            </ul>
-          </article>
+          <section class="sdk-tab-panel" data-sdk-panel="react-native">
+            <div class="sdk-step-layout">
+              <aside class="sdk-step-list">
+                <h3>Follow these steps</h3>
+                <ol>
+                  <li>
+                    <strong>Install npm package</strong>
+                    <span>Choose core AMOS or the AdMob wrapper package.</span>
+                  </li>
+                  <li>
+                    <strong>Add provider</strong>
+                    <span>Wrap the app root and provide bootstrap metrics.</span>
+                  </li>
+                  <li>
+                    <strong>Use hooks and helpers</strong>
+                    <span>Call tracking and ad methods directly from app screens.</span>
+                  </li>
+                </ol>
+              </aside>
+
+              <div class="sdk-code-stack">
+                <article class="sdk-code">
+                  <p class="service-index">Install</p>
+                  <h2>React Native package setup</h2>
+                  <pre><code># Core AMOS only
+npm install @amos-sdk/react-native@2.0.6
+
+# AMOS + AdMob wrapper hooks/components
+npm install @amos-sdk/react-native-admob@1.0.13</code></pre>
+                </article>
+
+                <article class="sdk-code">
+                  <p class="service-index">Provider</p>
+                  <h2>Initialize once near app root</h2>
+                  <pre><code>import { AmosProvider } from '@amos-sdk/react-native-admob';
+
+const amosConfig = {
+  apiKey: 'YOUR_API_KEY',
+  appId: 'YOUR_APP_ID',
+  userId: 'publisher-user-123',
+  bootstrap: {
+    firstOpenEvent: 'first_open',
+    metrics: ['platform', 'country', 'install_source', 'device_model'],
+    installSourceFallback: 'other',
+  },
+  admob: {
+    rewardedGroups: {
+      default: { unitIds: ['ca-app-pub-xxx/222'], preloadOnInit: true },
+    },
+    bannerGroups: {
+      default: { unitIds: ['ca-app-pub-xxx/333'] },
+    },
+  },
+};
+
+export default function App() {
+  return (
+    &lt;AmosProvider config={amosConfig}&gt;
+      &lt;RootNavigator /&gt;
+    &lt;/AmosProvider&gt;
+  );
+}</code></pre>
+                </article>
+
+                <article class="sdk-code">
+                  <p class="service-index">Use</p>
+                  <h2>Track events and call ad helpers</h2>
+                  <pre><code>import { AmosBannerAd, useAmos } from '@amos-sdk/react-native-admob';
+
+function RewardEntry() {
+  const amos = useAmos();
+
+  async function onRewardTap() {
+    const rewarded = await amos.showRewarded('default');
+    if (rewarded) {
+      await amos.trackEvent('rewarded_ad_complete');
+      grantCreditToUser();
+    }
+  }
+
+  return &lt;AmosBannerAd groupRef="default" /&gt;;
+}</code></pre>
+                </article>
+              </div>
+            </div>
+          </section>
+
         </section>
 
         <section class="sdk-links">
           <article class="sdk-link-card">
-            <p class="service-index">Recommended rollout order</p>
-            <h2>First-time publisher checklist</h2>
+            <p class="service-index">Reference</p>
+            <h2>Need complete native examples?</h2>
             <ul>
-              <li>Start with `amos-sdk-admob` if AdMob is your only provider right now.</li>
-              <li>Define `default` plus a few meaningful custom groups only where needed.</li>
-              <li>Validate one interstitial, one banner, one rewarded, one native, and one app-open flow first.</li>
-              <li>Externalize `AdMobConfig` only after the initial integration is stable.</li>
-              <li>Keep reward granting and screen timing in your app code.</li>
+              <li><a href="sdk-integration-guide.html">Open the full SDK integration guide</a></li>
+              <li><a href="https://central.sonatype.com/artifact/com.yuktinai/amos-sdk-admob/1.0.10">View the AdMob SDK listing</a></li>
+              <li><a href="https://central.sonatype.com/artifact/com.yuktinai/amos-sdk/1.0.10">View the base SDK listing</a></li>
+              <li><a href="https://www.npmjs.com/package/@amos-sdk/react-native-admob">View the React Native AdMob wrapper</a></li>
+              <li><a href="https://www.npmjs.com/package/@amos-sdk/react-native">View the React Native core wrapper</a></li>
             </ul>
           </article>
 
           <article class="sdk-link-card">
-            <p class="service-index">Useful links</p>
-            <h2>Publisher handoff</h2>
+            <p class="service-index">Recommended rollout</p>
+            <h2>Keep first integration focused.</h2>
             <ul>
-              <li><a href="sdk-integration-guide.html">Open the full Android integration code guide</a></li>
-              <li><a href="https://central.sonatype.com/artifact/com.yuktinai/amos-sdk-admob/1.0.4">View the AdMob SDK listing</a></li>
-              <li><a href="https://central.sonatype.com/artifact/com.yuktinai/amos-sdk/1.0.4">View the base SDK listing</a></li>
-              <li><a href="mailto:yuktinai2026@gmail.com?subject=AMOS%20SDK%20integration%20support">Request implementation support</a></li>
-              <li><a href="contact.html">Contact Yuktinai for onboarding help</a></li>
+              <li>Start with default ad groups first.</li>
+              <li>Validate one rewarded flow before enabling AMOS serving broadly.</li>
+              <li>Keep reward grants and final UX decisions in publisher app code.</li>
+              <li>Use `amos_ad_serving_enabled=false` if a live app needs immediate fallback.</li>
             </ul>
           </article>
         </section>

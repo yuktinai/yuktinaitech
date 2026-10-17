@@ -6,7 +6,7 @@
     <title>AMOS SDK Integration | Yuktinai Technologies</title>
     <meta
       name="description"
-      content="Developer-friendly AMOS SDK integration guide with tabbed Kotlin native Android and React Native wrapper examples."
+      content="Developer-friendly AMOS SDK integration guide for Kotlin Android, React Native, and Flutter apps."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -46,7 +46,7 @@
             <p class="eyebrow">SDK Integration</p>
             <h1>Connect AMOS to your app.</h1>
             <p>
-              Choose your app stack and copy the matching setup. AMOS supports Kotlin native Android SDKs and React Native wrapper packages for telemetry, decisioning, and optional managed AdMob serving.
+              Choose your app stack and copy the matching setup. AMOS supports Kotlin Android, React Native, and Flutter for telemetry, decisioning, and optional managed AdMob serving.
             </p>
             <div class="hero-actions">
               <a class="button button-primary" href="#connect">Start setup</a>
@@ -54,9 +54,10 @@
               <a class="button button-secondary" href="contact.html">Request onboarding help</a>
             </div>
             <div class="sdk-inline-links">
-              <span class="sdk-badge">Native SDK 1.0.10</span>
-              <span class="sdk-badge">RN core 2.0.6</span>
-              <span class="sdk-badge">RN AdMob 1.0.13</span>
+              <span class="sdk-badge">Native SDK 1.0.16</span>
+              <span class="sdk-badge">RN core 2.0.12</span>
+              <span class="sdk-badge">RN AdMob 1.0.19</span>
+              <span class="sdk-badge">Flutter core + AdMob 1.0.0</span>
             </div>
           </div>
 
@@ -88,6 +89,10 @@
             <button class="sdk-mode-tab" type="button" role="tab" aria-selected="false" data-sdk-tab="react-native">
               <span>React Native</span>
               <small>npm wrapper</small>
+            </button>
+            <button class="sdk-mode-tab" type="button" role="tab" aria-selected="false" data-sdk-tab="flutter">
+              <span>Flutter</span>
+              <small>pub.dev packages</small>
             </button>
           </div>
 
@@ -124,10 +129,10 @@
 
 dependencies {
     // AMOS controls AdMob load/show helpers
-    implementation("com.yuktinai:amos-sdk-admob:1.0.10")
+    implementation("com.yuktinai:amos-sdk-admob:1.0.16")
 
     // Or core-only/manual serving
-    // implementation("com.yuktinai:amos-sdk:1.0.10")
+    // implementation("com.yuktinai:amos-sdk:1.0.16")
 }</code></pre>
                 </article>
 
@@ -191,10 +196,10 @@ AmosAdMob.showInterstitial(
                   <p class="service-index">Install</p>
                   <h2>React Native package setup</h2>
                   <pre><code># Core AMOS only
-npm install @amos-sdk/react-native@2.0.6
+npm install @amos-sdk/react-native@2.0.12
 
 # AMOS + AdMob wrapper hooks/components
-npm install @amos-sdk/react-native-admob@1.0.13</code></pre>
+npm install @amos-sdk/react-native-admob@1.0.19</code></pre>
                 </article>
 
                 <article class="sdk-code">
@@ -253,6 +258,58 @@ function RewardEntry() {
             </div>
           </section>
 
+          <section class="sdk-tab-panel" data-sdk-panel="flutter">
+            <div class="sdk-step-layout">
+              <aside class="sdk-step-list">
+                <h3>Follow these steps</h3>
+                <ol>
+                  <li><strong>Install pub.dev packages</strong><span>Use core alone or add the Android AdMob adapter.</span></li>
+                  <li><strong>Initialize AMOS</strong><span>Provide the app ID and a stable, non-email user reference.</span></li>
+                  <li><strong>Render from policy</strong><span>Track signals and load ads only when the decision allows them.</span></li>
+                </ol>
+              </aside>
+              <div class="sdk-code-stack">
+                <article class="sdk-code">
+                  <p class="service-index">Install</p>
+                  <h2>Flutter package setup</h2>
+                  <pre><code># Core only
+flutter pub add amos_flutter
+
+# Add for AMOS-managed AdMob on Android
+flutter pub add amos_flutter_admob</code></pre>
+                </article>
+                <article class="sdk-code">
+                  <p class="service-index">Initialize</p>
+                  <h2>Start core, then AdMob</h2>
+                  <pre><code>final state = await AmosClient.instance.initialize(
+  const AmosConfiguration(
+    apiKey: String.fromEnvironment('AMOS_API_KEY'),
+    appId: 'YOUR_APP_ID',
+    externalUserId: 'stable-user-reference',
+  ),
+);
+
+await AmosAdMob.instance.initialize();</code></pre>
+                </article>
+                <article class="sdk-code">
+                  <p class="service-index">Use</p>
+                  <h2>Track and show from Flutter</h2>
+                  <pre><code>await AmosClient.instance.trackEvent('purchase_completed');
+
+if (state.decision.ads.bannerEnabled) {
+  // Add const AmosBannerAd() to the widget tree.
+}
+
+final load = await AmosAdMob.instance.preloadRewarded();
+if (load.loaded) {
+  final result = await AmosAdMob.instance.showRewarded();
+  if (result.rewardEarned) grantReward();
+}</code></pre>
+                </article>
+              </div>
+            </div>
+          </section>
+
         </section>
 
         <section class="sdk-links">
@@ -261,10 +318,12 @@ function RewardEntry() {
             <h2>Need complete native examples?</h2>
             <ul>
               <li><a href="sdk-integration-guide.html">Open the full SDK integration guide</a></li>
-              <li><a href="https://central.sonatype.com/artifact/com.yuktinai/amos-sdk-admob/1.0.10">View the AdMob SDK listing</a></li>
-              <li><a href="https://central.sonatype.com/artifact/com.yuktinai/amos-sdk/1.0.10">View the base SDK listing</a></li>
+              <li><a href="https://central.sonatype.com/artifact/com.yuktinai/amos-sdk-admob/1.0.16">View the AdMob SDK listing</a></li>
+              <li><a href="https://central.sonatype.com/artifact/com.yuktinai/amos-sdk/1.0.16">View the base SDK listing</a></li>
               <li><a href="https://www.npmjs.com/package/@amos-sdk/react-native-admob">View the React Native AdMob wrapper</a></li>
               <li><a href="https://www.npmjs.com/package/@amos-sdk/react-native">View the React Native core wrapper</a></li>
+              <li><a href="https://pub.dev/packages/amos_flutter_admob">View the Flutter AdMob wrapper</a></li>
+              <li><a href="https://pub.dev/packages/amos_flutter">View the Flutter core wrapper</a></li>
             </ul>
           </article>
 

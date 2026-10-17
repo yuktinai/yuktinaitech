@@ -6,7 +6,7 @@
     <title>AMOS Full SDK Integration Guide | Yuktinai Technologies</title>
     <meta
       name="description"
-      content="Detailed AMOS SDK integration guide with tabbed Kotlin native, Kotlin AdMob wrapper, React Native core, and React Native AdMob examples."
+      content="Detailed AMOS SDK integration guide with Kotlin, React Native, and Flutter core and AdMob examples."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -75,6 +75,14 @@
               <span>RN Core</span>
               <small>Telemetry only</small>
             </button>
+            <button class="sdk-mode-tab" type="button" role="tab" aria-selected="false" data-sdk-tab="flutter-admob">
+              <span>Flutter AdMob</span>
+              <small>Android adapter</small>
+            </button>
+            <button class="sdk-mode-tab" type="button" role="tab" aria-selected="false" data-sdk-tab="flutter-core">
+              <span>Flutter Core</span>
+              <small>Provider neutral</small>
+            </button>
           </div>
 
           <section class="sdk-tab-panel is-active" data-sdk-panel="kotlin-admob">
@@ -106,7 +114,7 @@
                   <p class="service-index">Dependency</p>
                   <h2>Add the AdMob wrapper artifact</h2>
                   <pre><code>dependencies {
-    implementation("com.yuktinai:amos-sdk-admob:1.0.10")
+    implementation("com.yuktinai:amos-sdk-admob:1.0.16")
 }</code></pre>
                 </article>
 
@@ -221,7 +229,7 @@ AmosAdMob.createBannerView(
                   <p class="service-index">Dependency</p>
                   <h2>Add core SDK and provider SDK</h2>
                   <pre><code>dependencies {
-    implementation("com.yuktinai:amos-sdk:1.0.10")
+    implementation("com.yuktinai:amos-sdk:1.0.16")
     implementation("com.google.android.gms:play-services-ads:25.4.0")
 }</code></pre>
                 </article>
@@ -307,7 +315,7 @@ Monetization.recordAdMobRewardedShown("rewarded_bonus_claim")</code></pre>
                 <article class="sdk-code">
                   <p class="service-index">Install</p>
                   <h2>Add the React Native AdMob wrapper</h2>
-                  <pre><code>npm install @amos-sdk/react-native-admob@1.0.13</code></pre>
+                  <pre><code>npm install @amos-sdk/react-native-admob@1.0.19</code></pre>
                 </article>
 
                 <article class="sdk-code">
@@ -393,7 +401,7 @@ function RewardScreen() {
                 <article class="sdk-code">
                   <p class="service-index">Install</p>
                   <h2>Add core React Native package</h2>
-                  <pre><code>npm install @amos-sdk/react-native@2.0.6</code></pre>
+                  <pre><code>npm install @amos-sdk/react-native@2.0.12</code></pre>
                 </article>
 
                 <article class="sdk-code">
@@ -434,6 +442,120 @@ await amos.trackMetric('device_model', 'sm_s908b');</code></pre>
               </div>
             </div>
           </section>
+
+          <section class="sdk-tab-panel" data-sdk-panel="flutter-admob">
+            <div class="sdk-step-layout">
+              <aside class="sdk-step-list">
+                <h3>Follow these steps</h3>
+                <ol>
+                  <li><strong>Install both packages</strong><span>Core owns sessions and policy; the adapter owns Android AdMob delivery.</span></li>
+                  <li><strong>Add the AdMob app ID</strong><span>Place the ID containing `~` in the Android application manifest.</span></li>
+                  <li><strong>Initialize in order</strong><span>Initialize AMOS core before the AdMob adapter.</span></li>
+                  <li><strong>Respect the decision</strong><span>Load or render only enabled formats and grant rewards from the earned callback.</span></li>
+                </ol>
+              </aside>
+              <div class="sdk-code-stack">
+                <article class="sdk-code">
+                  <p class="service-index">Install</p>
+                  <h2>Add Flutter core and AdMob</h2>
+                  <pre><code>dependencies:
+  amos_flutter: ^1.0.0
+  amos_flutter_admob: ^1.0.0</code></pre>
+                </article>
+                <article class="sdk-code">
+                  <p class="service-index">Android manifest</p>
+                  <h2>Add the publisher AdMob app ID</h2>
+                  <pre><code>&lt;application ...&gt;
+  &lt;meta-data
+    android:name="com.google.android.gms.ads.APPLICATION_ID"
+    android:value="ca-app-pub-xxxxxxxxxxxxxxxx~yyyyyyyyyy" /&gt;
+&lt;/application&gt;</code></pre>
+                </article>
+                <article class="sdk-code">
+                  <p class="service-index">Initialize</p>
+                  <h2>Start core before the provider</h2>
+                  <pre><code>final state = await AmosClient.instance.initialize(
+  const AmosConfiguration(
+    apiKey: String.fromEnvironment('AMOS_API_KEY'),
+    appId: 'YOUR_APP_ID',
+    externalUserId: 'stable-user-reference',
+  ),
+);
+
+await AmosAdMob.instance.initialize();</code></pre>
+                </article>
+                <article class="sdk-code">
+                  <p class="service-index">Ads</p>
+                  <h2>Load, show, and render safely</h2>
+                  <pre><code>final ads = state.decision.ads;
+
+if (state.decision.provider == 'admob' &amp;&amp; ads.interstitialEnabled) {
+  final load = await AmosAdMob.instance.preloadInterstitial();
+  if (load.loaded) await AmosAdMob.instance.showInterstitial();
+}
+
+if (ads.rewardedEnabled) {
+  await AmosAdMob.instance.preloadRewarded();
+  final result = await AmosAdMob.instance.showRewarded();
+  if (result.rewardEarned) grantReward();
+}
+
+// Widget tree:
+return ads.bannerEnabled
+    ? const AmosBannerAd()
+    : const SizedBox.shrink();</code></pre>
+                </article>
+              </div>
+            </div>
+          </section>
+
+          <section class="sdk-tab-panel" data-sdk-panel="flutter-core">
+            <div class="sdk-step-layout">
+              <aside class="sdk-step-list">
+                <h3>Follow these steps</h3>
+                <ol>
+                  <li><strong>Install core</strong><span>Use provider-neutral sessions, identity, signals, decisions, paywalls, and remote config.</span></li>
+                  <li><strong>Initialize once</strong><span>Supply a stable, non-email external user reference.</span></li>
+                  <li><strong>Track allowed signals</strong><span>Use event and metric names configured in the publisher portal.</span></li>
+                  <li><strong>React to policy</strong><span>Your app remains responsible for provider rendering in core-only mode.</span></li>
+                </ol>
+              </aside>
+              <div class="sdk-code-stack">
+                <article class="sdk-code">
+                  <p class="service-index">Install</p>
+                  <h2>Add Flutter core</h2>
+                  <pre><code>dependencies:
+  amos_flutter: ^1.0.0</code></pre>
+                </article>
+                <article class="sdk-code">
+                  <p class="service-index">Session</p>
+                  <h2>Initialize AMOS</h2>
+                  <pre><code>final state = await AmosClient.instance.initialize(
+  const AmosConfiguration(
+    apiKey: String.fromEnvironment('AMOS_API_KEY'),
+    appId: 'YOUR_APP_ID',
+    externalUserId: 'stable-user-reference',
+  ),
+);</code></pre>
+                </article>
+                <article class="sdk-code">
+                  <p class="service-index">Signals and policy</p>
+                  <h2>Track outcomes and consume decisions</h2>
+                  <pre><code>await AmosClient.instance.trackEvent('purchase_completed');
+await AmosClient.instance.trackMetric('purchase_value', 9.99);
+
+final paywall = await AmosClient.instance
+    .getPaywallDecision('editor_export');
+if (paywall.shouldShow) {
+  showYourPaywall();
+  await AmosClient.instance.recordPaywallShown('editor_export');
+}
+
+final config = await AmosClient.instance.getRemoteConfig();</code></pre>
+                </article>
+              </div>
+            </div>
+          </section>
         </section>
 
         <section class="sdk-links">
@@ -453,10 +575,12 @@ await amos.trackMetric('device_model', 'sm_s908b');</code></pre>
             <p class="service-index">Package links</p>
             <h2>Artifacts</h2>
             <ul>
-              <li><a href="https://central.sonatype.com/artifact/com.yuktinai/amos-sdk-admob/1.0.10">Kotlin AdMob artifact</a></li>
-              <li><a href="https://central.sonatype.com/artifact/com.yuktinai/amos-sdk/1.0.10">Kotlin core artifact</a></li>
+              <li><a href="https://central.sonatype.com/artifact/com.yuktinai/amos-sdk-admob/1.0.16">Kotlin AdMob artifact</a></li>
+              <li><a href="https://central.sonatype.com/artifact/com.yuktinai/amos-sdk/1.0.16">Kotlin core artifact</a></li>
               <li><a href="https://www.npmjs.com/package/@amos-sdk/react-native-admob">React Native AdMob wrapper</a></li>
               <li><a href="https://www.npmjs.com/package/@amos-sdk/react-native">React Native core wrapper</a></li>
+              <li><a href="https://pub.dev/packages/amos_flutter_admob">Flutter AdMob wrapper</a></li>
+              <li><a href="https://pub.dev/packages/amos_flutter">Flutter core wrapper</a></li>
               <li><a href="sdk.html">Return to quick setup</a></li>
             </ul>
           </article>

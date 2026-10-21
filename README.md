@@ -25,8 +25,8 @@ Open `index.html` in a browser, or serve the folder with any static file server.
 
 The SDK pages currently document:
 
-- Kotlin native `com.yuktinai:amos-sdk-admob:1.0.16`
-- Kotlin native `com.yuktinai:amos-sdk:1.0.16`
+- Kotlin native `com.amostack:amos-sdk-admob:2.0.0`
+- Kotlin native `com.amostack:amos-sdk:2.0.0`
 - React Native `@amos-sdk/react-native-admob@1.0.19`
 - React Native `@amos-sdk/react-native@2.0.12`
 - Flutter Android `amos_flutter_admob: ^1.0.0`
